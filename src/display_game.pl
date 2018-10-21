@@ -1,10 +1,11 @@
 display_game(N):-
     createBoard(N,[],FinalBoard),
     print_tab(FinalBoard,0).
-
+    
 createBoard(N,Board,FinalBoard):-
     (
-        N mod 2 =\= 0 -> write('The board must have an even length') ; 
+        N mod 2 =\= 0 -> write('The board must have an even length'),
+        createBoard(0,0,[],[]) ; 
         createBoardList(N,0,Board,FinalBoard),
         createBoard(0,0,FinalBoard,FinalBoard)
     ).
@@ -42,6 +43,7 @@ createBlackLine(Size,Line,F):-
 createBlackLine(0,Line,Line).
 
 print_tab([]).
+print_tab([],0).
 print_tab([L|T],X):-
 Counter is X+1,
 print_line(L),
