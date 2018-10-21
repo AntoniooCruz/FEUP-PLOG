@@ -1,6 +1,9 @@
-display_game(N):-
+create_game(N):-
     createBoard(N,[],FinalBoard),
-    print_tab(FinalBoard,0).
+    display_game(FinalBoard,Player).
+
+display_game(Board,Player):-
+    print_tab(Board,0).
     
 createBoard(N,Board,FinalBoard):-
     (
@@ -62,7 +65,7 @@ put_code(V),
 write('|').
 
 
-traduz(0,0x25a1).
+traduz(0,0x2715).
 traduz(1,0x26aa).
 traduz(2,0x26ab).
 
