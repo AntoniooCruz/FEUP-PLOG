@@ -22,11 +22,10 @@ vazio2(0, Y, [V | W]):- Y1 is Y - 1, vazio2(0, Y1, W).
 selectRow(0, [V | W]) :- 0 == 0.
 selectRow(Y, [V | W]) :- Y1 is Y - 1, selectRow(Y1, W). 
 
-makePlay(X,Y,J,L):-
-createBoard(V),
-vazio(X,Y,V),
-selectRow(X,K),
-select(0,K,J,K1).
+
+
+
+
 
 /* gets the elements of a list that are before a certain element*/
 getB(X):-
