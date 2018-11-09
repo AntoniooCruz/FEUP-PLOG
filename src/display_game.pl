@@ -131,4 +131,4 @@ makePlay(X, Y, 5, OldB, OldB1),
 checkUp(X,Y,OldB1,NewB),
 checkDown(X,Y,OldB1,NewB),
 checkLeft(X,Y,OldB1,NewB),
-checkRight(X,Y,OldB1,NewB),
+checkRight(X,Y,OldB1,NewB).
