@@ -90,6 +90,10 @@ insert(T, Element, Index1, NewList).
 createBoard(X):-
 append([[1,0,0],[0,1,0]], [[0,0,1]], X).
 
+getPos(X,Y,Element,Board):-
+nth0(Y, Board, Row),
+nth0(X, Row, Element).
+
 /*Makes a players play, replaces the cell in coordinates (0,1) with the character(2), on a board(3), returns the resulting board(4)*/
 makePlay(X, Y, Player, OldB, NewB):-
 nth0(Y, OldB, Row, RestRows),
@@ -101,31 +105,34 @@ checkUp(X,Y,OldB, NewB):-
 Y1 is Y - 1, 
 nth0(Y1, OldB, Row),
 nth0(X, Row, Element),
-Element == 1 -> makePlay(X,Y1,Element,OldB,NewB), removePieces(X,Y1,Element,OldB,NewB);
-Element == 2 -> makePlay(X,Y1,Element,OldB,NewB), removePieces(X,Y1,Element,OldB,NewB).
+Element == 1 -> makePlay(X,Y1,Element,OldB,NewB), removePieces(X,Y1,OldB,NewB);
+(Element == 2 -> makePlay(X,Y1,Element,OldB,NewB), removePieces(X,Y1,OldB,NewB)).
 
 checkDown(X,Y,OldB, NewB):-
 Y1 is Y + 1, 
 nth0(Y1, OldB, Row),
 nth0(X, Row, Element),
-Element == 1 -> makePlay(X,Y1,Element,OldB,NewB), removePieces(X,Y1,Element,OldB,NewB);
-Element == 2 -> makePlay(X,Y1,Element,OldB,NewB), removePieces(X,Y1,Element,OldB,NewB).
+Element == 1 -> makePlay(X,Y1,Element,OldB,NewB), removePieces(X,Y1,OldB,NewB);
+(Element == 2 -> makePlay(X,Y1,Element,OldB,NewB), removePieces(X,Y1,OldB,NewB)).
 
 checkLeft(X,Y,OldB,NewB):-
 X1 is X - 1, 
 nth0(Y, OldB, Row),
 nth0(X1, Row, Element),
-Element == 1 -> makePlay(X1,Y,Element,OldB,NewB), removePieces(X1,Y,Element,OldB,NewB);
-Element == 2 -> makePlay(X1,Y,Element,OldB,NewB), removePieces(X1,Y,Element,OldB,NewB).
+Element == 1 -> makePlay(X1,Y,Element,OldB,NewB), removePieces(X1,Y,OldB,NewB);
+(Element == 2 -> makePlay(X1,Y,Element,OldB,NewB), removePieces(X1,Y,OldB,NewB)).
 
 checkRight(X,Y,OldB,NewB):-
 X1 is X + 1, 
 nth0(Y, OldB, Row),
 nth0(X1, Row, Element),
-Element == 1 -> makePlay(X1,Y,Element,OldB,NewB), removePieces(X1,Y,Element,OldB,NewB);
-Element == 2 -> makePlay(X1,Y,Element,OldB,NewB), removePieces(X1,Y,Element,OldB,NewB).
+Element == 1 -> makePlay(X1,Y,Element,OldB,NewB), removePieces(X1,Y,OldB,NewB);
+(Element == 2 -> makePlay(X1,Y,Element,OldB,NewB), removePieces(X1,Y,OldB,NewB)).
 
 
+
+
+/*removePieces(X,Y,OldB, 1):- removePieces(X, Y, OldB, [[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]]).*/
 removePieces(X, Y, OldB, NewB):-
 makePlay(X, Y, 5, OldB, OldB1),
 checkUp(X,Y,OldB1,NewB),
