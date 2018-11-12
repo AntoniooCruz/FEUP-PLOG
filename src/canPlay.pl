@@ -1,4 +1,5 @@
 :- use_module(library(lists)).
+:- use_module(library(random)).
 
 createBoard(X):-
 append([[1,0,0],[0,1,0]], [[0,0,1]], X).
@@ -50,3 +51,31 @@ write(L),
 X < 3,
 Y < 3, 
 vazio(X,Y,L).
+
+/*Verifies if a certain move is valid*/
+getPos(X,Y,Element,Board):-
+nth0(Y, Board, Row),
+nth0(X, Row, Element).
+
+validMove([Xs,Ys,Xf,Yf],Board,Player):-
+getPos(Xs,Ys,ElementStart,Board),
+getPos(Xf,Yf,ElementEnd,Board),
+ElementStart =:= Player,
+ElementEnd =\= Player,
+ElementEnd =\= 0.
+
+/*Chooses a Random Play*/
+getRandomPlay(Board,Player,Play):-
+findall([Xs,Ys,Xf,Yf],validMove([Xs,Ys,Xf,Yf],Board,Player),ListOfMoves),
+list_length(ListOfMoves,Size),
+random(0,Size,Move),
+nth0(Move,ListOfMoves,Play).
+
+
+/*Calculates the length of a list*/
+list_length(Xs,L) :- list_length(Xs,0,L) .
+
+list_length( []     , L , L ) .
+list_length( [_|Xs] , T , L ) :-
+  T1 is T+1 ,
+  list_length(Xs,T1,L).
