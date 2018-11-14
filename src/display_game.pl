@@ -132,13 +132,14 @@ makePlay(X1,Y1,X2,Y2,Player,OldB,NewB):-
 validPlay(X2,Y2,Player,OldB) -> (insertPiece(X1,Y1,0,OldB,OldB1),
 insertPiece(X2,Y2,Player,OldB1,NewB)); write('Invalid play!').
 
+/*Checks if the cell above has a stone*/
 checkUp(X,Y,OldB, NewB):-
 Y1 is Y - 1, 
 nth0(Y1, OldB, Row),
 nth0(X, Row, Element),
 (Element == 1 ; Element == 2) -> removePieces(X,Y1,Element,OldB,NewB); removePieces(X,Y,Element,[],NewB).
 
-
+/*Checks if the cell below has a stone*/
 checkDown(X,Y,OldB, NewB):-
 Y1 is Y + 1, 
 nth0(Y1, OldB, Row),
@@ -146,7 +147,7 @@ nth0(X, Row, Element),
 (Element == 1 ; Element == 2) -> removePieces(X,Y1, Element, OldB, NewB); removePieces(X,Y,Element,[],NewB).
 
 
-
+/*Checks if the cell to the left has a stone*/
 checkLeft(X,Y,OldB,NewB):-
 X1 is X - 1, 
 nth0(Y, OldB, Row),
@@ -154,30 +155,75 @@ nth0(X1, Row, Element),
 (Element == 1 ; Element == 2) -> removePieces(X1,Y, Element, OldB, NewB); removePieces(X,Y,Element,[],NewB).
 
 
-
+/*Checks if the cell to the right has a stone*/
 checkRight(X,Y,OldB,NewB):-
 X1 is X + 1, 
 nth0(Y, OldB, Row),
 nth0(X1, Row, Element),
 (Element == 1 ; Element == 2) -> removePieces(X1,Y, Element, OldB, NewB); removePieces(X,Y,Element,[],NewB).
 
+/*Checks if an element in the list has the coordinates given*/
 checkCoordinates(X,Y,[]):-fail.
 checkCoordinates(X,Y,[H|T]):-
 compareCoords(X,Y,H);
 checkCoordinates(X,Y,T).
 
+/*Checks if the X coordinates are the unifiable*/
 compareCoords(X,Y,[H|T]):-
-X == H,
-compareCoords2(Y,T).
+Y == H,
+compareCoords2(X,T).
 
-compareCoords2(Y,[H|T]):- Y == H.
+/*Checks if the Y coordinates are the unifiable*/
+compareCoords2(X,[H|T]):- X == H.
 
 
-/*[[0,0,0,0,0,0,0],[0,0,0,1,2,1,0],[2,0,0,1,0,1,0],[1,2,2,1,0,2,1],[0,1,0,2,2,1,2],[2,0,1,0,0,0,2],[1,2,2,0,1,1,2]]*/
-removePieces(X,Y,Element,[],New).
-/*removePieces(X,Y,OldB, 1):- removePieces(X, Y, OldB, [[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]]).*/
-/*A substituição de células por 5 não está a funcionar talvez seja melhor usar a Lista para verificar quais as células visitadas*/
-removePieces(X, Y, Element, OldB, [[X,Y,Element] | NewB]):-
+checkColour(Colour,[H | [H1|[T1| E]]]):-
+T1 == Colour.
+
+countPieces(_,[],_,[]).
+countPiecesAdd(_,[],_,[]).
+
+countPiecesColour(Colour, [H|T], length(List2)):-
+append([],[],List2),
+checkColour(Colour, H) -> countPiecesAdd(Colour, T, H, List2); countPieces(Colour, T, H, List2).
+
+countPiecesAdd(Colour, [H|T], Element, [Element | List2]):-
+checkColour(Colour, H) -> countPiecesAdd(Colour, T, H, List2); countPieces(Colour, T, H, List2).
+
+countPieces(Colour, [H|T], Element, List2):-
+checkColour(Colour, H) -> countPiecesAdd(Colour, T, H, List2); countPieces(Colour, T, H, List2).
+
+/*Extracts the stone(1/2) of the first element of a list of lists of type [CoordX,CoordY,Stone]*/
+extractFirstStone([[E1|[E2|S]]|T], Stone):-
+Stone is S.
+
+
+/* Separação adicionar membros ao Row e rows ao board */
+boardAfterPlay([Head|Tail], DimX, DimY, NewBoard):-
+X = 0, Y = 0,
+(checkCoordinates(X,Y,[Head| Tail]) -> (extractFirstStone([Head| Tail], S), addCell(X, Y, Tail, S, Row, DimX, DimY, NewBoard)); (S is 0, addCell(X, Y, [Head| Tail], S , Row, DimX, DimY, NewBoard))).
+
+addCell(X, DimY, [Head| Tail], S,  [S | Row], DimX, DimY, NewBoard).
+addCell(DimX, Y, [Head| Tail], S, Row, DimX, DimY, [Row| NewBoard]):- Y1 is Y + 1, X1 is 0, append([],[],Row), addCell(X1, Y1, [Head| Tail], S, Row, DimX, DimY, NewBoard).
+
+
+addCell(X,Y,[Head| Tail],S,[S | Row], DimX, DimY, NewBoard):-
+X1 is X + 1,
+(checkCoordinates(X1,Y,[Head| Tail]) -> (extractFirstStone([Head| Tail], S), addCell(X1, Y, Tail, S, Row, DimX, DimY, NewBoard)); (S is 0, addCell(X1, Y, [Head| Tail], S , Row, DimX, DimY, NewBoard))).
+
+
+
+
+completePlay(X1,Y1,X2,Y2,Player,OldB,NewB):-
+makePlay(X1,Y1,X2,Y2,Player, OldB, NewB1),
+removePieces2(X2,Y2,NewB1, List),
+sort(List, SortedList),
+boardAfterPlay(SortedList, 7,7, NewB).
+
+
+
+removePieces(_,_,_,[],[]).
+removePieces(X, Y, Element, OldB, [[Y,X,Element] | NewB]):-
 insertPiece(X, Y, 5, OldB, OldB1),
 (Y \= 0 -> checkUp(X,Y,OldB1,New1); 1=1),
 (Y \= 6 -> checkDown(X,Y,OldB1,New2); 1=1),
@@ -195,7 +241,9 @@ insertPiece(X, Y, 5, OldB, OldB1),
 (X \= 6 -> checkRight(X,Y,OldB1,New4); 1=1),
 append(New1,New2,NewA1),
 append(NewA1,New3,NewA2),
-append(NewA2, New4, NewB).
+append(NewA2, New4, NewK),
+append(NewK, [], NewB).
+/*sort can be used to eliminate duplicate elements and to sort the list*/
 
 
 
