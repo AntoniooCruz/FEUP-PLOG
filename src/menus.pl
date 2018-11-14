@@ -7,8 +7,19 @@ write('|---------------- 3) COM vs COM ----------------|'),nl,
 write('|---------------- 4) EXIT! ---------------------|'),nl,
 write('|_______________________________________________|'),nl,nl.
 
-PvPGame:-
-fail.
 
+processMenuChoice(Response):-
+(Response == '1') -> startPvpGame,nl;
+(Response == '2') -> write('P vs C game.'),nl;
+(Response == '3') -> startCvCGame,nl;
+(Response == '4') -> write('exit '),nl, \+fail.
 
+startPvpGame:-
+boardSize(Size),
+createBoard(Size,[],Board),
+gameCycle(Board,1).
 
+startCvCGame:-
+boardSize(Size),
+createBoard(Size,[],Board),
+comCycle(Board,1).

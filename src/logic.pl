@@ -1,5 +1,5 @@
 :- use_module(library(lists)).
-
+:- use_module(library(random)).
 /*Aux function for createEmptyBoard*/
 createEmptyRow(0, []).
 createEmptyRow(X,[0 | Row]):-
@@ -48,9 +48,9 @@ getPos(X,Y,Element,Board),
 Element \= Player, Element \= 0.
 
 /*Checks for valid play, removes a players stone from one cell and places it in another cell, removes the opponent's stone*/
-makePlay(X1,Y1,X2,Y2,Player,OldB,NewB):-
-validPlay(X2,Y2,Player,OldB) -> (insertPiece(X1,Y1,0,OldB,OldB1),
-insertPiece(X2,Y2,Player,OldB1,NewB)); write('Invalid play!').
+makePlay([X1,Y1,X2,Y2],Player,OldB,NewB):-
+insertPiece(X1,Y1,0,OldB,OldB1),
+insertPiece(X2,Y2,Player,OldB1,NewB).
 
 checkUp(X,Y,OldB, NewB):-
 Y1 is Y - 1, 
@@ -116,6 +116,35 @@ insertPiece(X, Y, 5, OldB, OldB1),
 append(New1,New2,NewA1),
 append(NewA1,New3,NewA2),
 append(NewA2, New4, NewB).
+
+
+/*Verifies if a certain move is valid*/
+getPos(X,Y,Element,Board):-
+nth0(Y, Board, Row),
+nth0(X, Row, Element).
+
+validMove([Xs,Ys,Xf,Yf],Board,Player):-
+getPos(Xs,Ys,ElementStart,Board),
+getPos(Xf,Yf,ElementEnd,Board),
+ElementStart =:= Player,
+ElementEnd =\= Player,
+ElementEnd =\= 0.
+
+/*Chooses a Random Play*/
+getRandomPlay(Board,Player,[Xs,Ys,Xf,Yf]):-
+findall([Xs,Ys,Xf,Yf],validMove([Xs,Ys,Xf,Yf],Board,Player),ListOfMoves),
+list_length(ListOfMoves,Size),
+random(0,Size,Move),
+nth0(Move,ListOfMoves,[Xs,Ys,Xf,Yf]).
+
+
+/*Calculates the length of a list*/
+list_length(Xs,L) :- list_length(Xs,0,L) .
+
+list_length( []     , L , L ) .
+list_length( [_|Xs] , T , L ) :-
+  T1 is T+1 ,
+  list_length(Xs,T1,L).
 
 
 

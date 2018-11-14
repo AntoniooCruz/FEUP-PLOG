@@ -57,14 +57,13 @@ print_line(L).
 print_cell(X):- 
 traduz(X,V),
 write('|'),
-/*put_code(V),*/
-write(V),
+put_code(V),
 write('|').
 
 
 traduz(0,0).
-traduz(1,1).
-traduz(2,2).
+traduz(1,0x25CB).
+traduz(2,0x25CF).
 
 firstLine(N,Counter):-
     N > 0,
