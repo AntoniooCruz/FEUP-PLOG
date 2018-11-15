@@ -223,16 +223,32 @@ X1 is X + 1,
 (checkCoordinates(X1,Y,[Head| Tail]) -> (extractFirstStone([Head| Tail], S), addCell(X1, Y, Tail, S, Row, DimX, DimY, NewBoard)); (S is 0, addCell(X1, Y, [Head| Tail], S , Row, DimX, DimY, NewBoard))).
 
 
-makeRowAfter([H|T], DimX, DimX, Y, NewRow, S).
+/*[[1,1,2],[1,2,2],[3,2,1],[1,0,2],[2,2,1]]*/
+
+makeRowAfter([H|T], DimX, DimX, Y, [], S).
+
+makeRowAfterFirst([H|T], X, DimX, Y, NewRow):-
+extractStone(X, Y, [H|T], S1),
+makeRowAfter([H|T], X, DimX, Y, NewRow, S1).
+
 
 makeRowAfter([H|T], X, DimX, Y, [S | NewRow], S):-
 X1 is X + 1,
 extractStone(X1, Y, [H|T], S1),
 makeRowAfter([H|T], X1, DimX, Y, NewRow, S1).
 
+
+
+makeBoardAfterFirst([H|T], Y, DimX, DimY, NewBoard):-
+X is 0,
+makeRowAfterFirst([H|T], X, DimX, Y, NewRow1),
+Y1 is Y +1,
+makeBoardAfter([H|T], Y1, DimX, DimY, NewBoard, NewRow1).
+
+makeBoardAfter([H|T], DimY, _, DimY, [NewRow| []], NewRow).
 makeBoardAfter([H|T], Y, DimX, DimY, [NewRow | NewBoard], NewRow):-
 X is 0,
-makeRowAfter([H|T], X, DimX, Y, NewRow1, S),
+makeRowAfterFirst([H|T], X, DimX, Y, NewRow1),
 Y1 is Y +1,
 makeBoardAfter([H|T], Y1, DimX, DimY, NewBoard, NewRow1).
 
