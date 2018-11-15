@@ -130,7 +130,7 @@ Element \= Player, Element \= 0.
 /*Checks for valid play, removes a players stone from one cell and places it in another cell, removes the opponent's stone*/
 makePlay(X1,Y1,X2,Y2,Player,OldB,NewB):-
 validPlay(X2,Y2,Player,OldB) -> (insertPiece(X1,Y1,0,OldB,OldB1),
-insertPiece(X2,Y2,Player,OldB1,NewB)); write('Invalid play!').
+insertPiece(X2,Y2,Player,OldB1,NewB)); (write('Invalid play!'), fail).
 
 /*Checks if the cell above has a stone*/
 checkUp(X,Y,OldB, NewB):-
@@ -252,11 +252,13 @@ Y1 is Y +1,
 makeBoardAfter([H|T], Y1, DimX, DimY, NewBoard, NewRow1).
 
 
-completePlay(X1,Y1,X2,Y2,Player,OldB,NewB):-
-makePlay(X1,Y1,X2,Y2,Player, OldB, NewB1),
+completePlay(X1,Y1,X2,Y2,Player,[H|T],NewB):-
+makePlay(X1,Y1,X2,Y2,Player, [H|T], NewB1),
 removePieces2(X2,Y2,NewB1, List),
 sort(List, SortedList),
-makeBoardAfterFirst(SortedList,0,7,7,NewB).
+length([H|T], LengthY),
+length(H, LengthX),
+makeBoardAfterFirst(SortedList,0,LengthX,LengthY,NewB).
 
 
 
