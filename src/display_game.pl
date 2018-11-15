@@ -223,7 +223,6 @@ X1 is X + 1,
 (checkCoordinates(X1,Y,[Head| Tail]) -> (extractFirstStone([Head| Tail], S), addCell(X1, Y, Tail, S, Row, DimX, DimY, NewBoard)); (S is 0, addCell(X1, Y, [Head| Tail], S , Row, DimX, DimY, NewBoard))).
 
 
-/*[[1,1,2],[1,2,2],[3,2,1],[1,0,2],[2,2,1]]*/
 
 makeRowAfter([H|T], DimX, DimX, Y, [], S).
 
@@ -257,7 +256,7 @@ completePlay(X1,Y1,X2,Y2,Player,OldB,NewB):-
 makePlay(X1,Y1,X2,Y2,Player, OldB, NewB1),
 removePieces2(X2,Y2,NewB1, List),
 sort(List, SortedList),
-boardAfterPlay(SortedList, 7,7, NewB).
+makeBoardAfterFirst(SortedList,0,7,7,NewB).
 
 
 
