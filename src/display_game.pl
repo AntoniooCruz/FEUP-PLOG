@@ -197,14 +197,21 @@ checkColour(Colour, H) -> countPiecesAdd(Colour, T, H, List2); countPieces(Colou
 extractFirstStone([[E1|[E2|S]]|T], Stone):-
 Stone is S.
 
+extractStone(X,Y,[[Y|[X|S]]| T],Stone):-
+Stone is S.
+
+extractStone(X,Y,[[Y1|[X1|S]]| T],Stone)
+
+
 
 /* Separação adicionar membros ao Row e rows ao board */
+/*Criar um board fazio e fazer inserts*/
 boardAfterPlay([Head|Tail], DimX, DimY, NewBoard):-
 X = 0, Y = 0,
 (checkCoordinates(X,Y,[Head| Tail]) -> (extractFirstStone([Head| Tail], S), addCell(X, Y, Tail, S, Row, DimX, DimY, NewBoard)); (S is 0, addCell(X, Y, [Head| Tail], S , Row, DimX, DimY, NewBoard))).
 
 addCell(X, DimY, [Head| Tail], S,  [S | Row], DimX, DimY, NewBoard).
-addCell(DimX, Y, [Head| Tail], S, Row, DimX, DimY, [Row| NewBoard]):- Y1 is Y + 1, X1 is 0, append([],[],Row), addCell(X1, Y1, [Head| Tail], S, Row, DimX, DimY, NewBoard).
+addCell(DimX, Y, [Head| Tail], S, Row, DimX, DimY, [Row| NewBoard]):- Y1 is (Y + 1), X1 = 0, append([],[],Row1), addCell(X1, Y1, [Head| Tail], S, Row1, DimX, DimY, NewBoard).
 
 
 addCell(X,Y,[Head| Tail],S,[S | Row], DimX, DimY, NewBoard):-
@@ -212,6 +219,19 @@ X1 is X + 1,
 (checkCoordinates(X1,Y,[Head| Tail]) -> (extractFirstStone([Head| Tail], S), addCell(X1, Y, Tail, S, Row, DimX, DimY, NewBoard)); (S is 0, addCell(X1, Y, [Head| Tail], S , Row, DimX, DimY, NewBoard))).
 
 
+makeRowAfter([H|T], DimX, DimX, [S| NewRow], S).
+
+makeRowAfter([H|T], X, DimX, [0 | NewRow], 0):-
+X1 is X + 1,
+extractFirstStone([H|T], S),
+makeRow([H|T], X1, DimX, NewRow, S).
+
+makeRowAfter([H|T], X, DimX, [S | NewRow], S):-
+X1 is X + 1,
+extractFirstStone([H|T], S1),
+makeRow(T, X1, DimX, NewRow, S1).
+
+makeBoardAfter([H|T])
 
 
 completePlay(X1,Y1,X2,Y2,Player,OldB,NewB):-
