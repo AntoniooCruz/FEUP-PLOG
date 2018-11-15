@@ -200,7 +200,11 @@ Stone is S.
 extractStone(X,Y,[[Y|[X|S]]| T],Stone):-
 Stone is S.
 
-extractStone(X,Y,[[Y1|[X1|S]]| T],Stone)
+extractStone(_,_,[], Stone):-
+Stone is 0.
+
+extractStone(X,Y,[[Y1|[X1|S]]| T],Stone):-
+extractStone(X,Y,T,Stone).
 
 
 
@@ -219,19 +223,18 @@ X1 is X + 1,
 (checkCoordinates(X1,Y,[Head| Tail]) -> (extractFirstStone([Head| Tail], S), addCell(X1, Y, Tail, S, Row, DimX, DimY, NewBoard)); (S is 0, addCell(X1, Y, [Head| Tail], S , Row, DimX, DimY, NewBoard))).
 
 
-makeRowAfter([H|T], DimX, DimX, [S| NewRow], S).
+makeRowAfter([H|T], DimX, DimX, Y, NewRow, S).
 
-makeRowAfter([H|T], X, DimX, [0 | NewRow], 0):-
+makeRowAfter([H|T], X, DimX, Y, [S | NewRow], S):-
 X1 is X + 1,
-extractFirstStone([H|T], S),
-makeRow([H|T], X1, DimX, NewRow, S).
+extractStone(X1, Y, [H|T], S1),
+makeRowAfter([H|T], X1, DimX, Y, NewRow, S1).
 
-makeRowAfter([H|T], X, DimX, [S | NewRow], S):-
-X1 is X + 1,
-extractFirstStone([H|T], S1),
-makeRow(T, X1, DimX, NewRow, S1).
-
-makeBoardAfter([H|T])
+makeBoardAfter([H|T], Y, DimX, DimY, [NewRow | NewBoard], NewRow):-
+X is 0,
+makeRowAfter([H|T], X, DimX, Y, NewRow1, S),
+Y1 is Y +1,
+makeBoardAfter([H|T], Y1, DimX, DimY, NewBoard, NewRow1).
 
 
 completePlay(X1,Y1,X2,Y2,Player,OldB,NewB):-
