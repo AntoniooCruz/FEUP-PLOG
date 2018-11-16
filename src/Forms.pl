@@ -8,22 +8,22 @@ menuDisplay,
 getChar(Opt),
 processMenuChoice(Opt).
 
-gameCycle(Board,Player):-
-print_tab(Board,0),nl,
+gameCycle(Board,Size,Player):-
+print_tab(Board,Size,0),nl,
 readPlay([Xs,Ys,Xf,Yf],Player,Board),
 completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
 (
-    Player =:= 1 -> gameCycle(NewBoard,2);
-    gameCycle(NewBoard,1)
+    Player =:= 1 -> gameCycle(NewBoard,Size,2);
+    gameCycle(NewBoard,Size,1)
 ).
 
-comCycle(Board,Player):-
-print_tab(Board,0),nl,
+comCycle(Board,Size,Player):-
+print_tab(Board,Size,0),nl,
 getRandomPlay(Board,Player,[Xs,Ys,Xf,Yf]),
 makePlay([Xs,Ys,Xf,Yf],Player,Board,NewBoard),
 (
     Player =:= 1 -> comCycle(NewBoard,2);
-    comCycle(NewBoard,1)
+    comCycle(NewBoard,Size,1)
 ).
 
 
