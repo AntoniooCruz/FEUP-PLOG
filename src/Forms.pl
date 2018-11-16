@@ -20,11 +20,25 @@ completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
 comCycle(Board,Size,Player):-
 print_tab(Board,Size,0),nl,
 getRandomPlay(Board,Player,[Xs,Ys,Xf,Yf]),
-makePlay([Xs,Ys,Xf,Yf],Player,Board,NewBoard),
+makePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
 (
     Player =:= 1 -> comCycle(NewBoard,2);
     comCycle(NewBoard,Size,1)
 ).
+
+gameVComCycle(Board,Size,Player):-
+print_tab(Board,Size,0),nl,
+(
+    Player =:= 1 -> readPlay([Xs,Ys,Xf,Yf],Player,Board),
+                    completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
+                    gameVComCycle(NewBoard,Size,2);
+
+                    write('Computer Move: '),nl,
+                    getRandomPlay(Board,Player,[Xs,Ys,Xf,Yf]),
+                    makePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
+                    gameVComCycle(NewBoard,Size,1)
+).
+
 
 
 

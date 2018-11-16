@@ -10,7 +10,7 @@ write('|_______________________________________________|'),nl,nl.
 
 processMenuChoice(Response):-
 (Response == '1') -> startPvpGame,nl;
-(Response == '2') -> write('P vs C game.'),nl;
+(Response == '2') -> startPvCGame,nl;
 (Response == '3') -> startCvCGame,nl;
 (Response == '4') -> write('exit '),nl, \+fail.
 
@@ -23,3 +23,8 @@ startCvCGame:-
 boardSize(Size),
 createBoard(Size,[],Board),
 comCycle(Board,Size,1).
+
+startPvCGame:-
+boardSize(Size),
+createBoard(Size,[],Board),
+gameVComCycle(Board,Size,1).

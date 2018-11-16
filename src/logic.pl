@@ -234,5 +234,11 @@ list_length( [_|Xs] , T , L ) :-
   T1 is T+1 ,
   list_length(Xs,T1,L).
 
+/*Checks if the game is over*/
+/*game_over(Board,LastPlayer,Winner):-
+findall([Xs,Ys,Xf,Yf],validMove([Xs,Ys,Xf,Yf],Board,LastPlayer),ListOfMoves),
+list_length(ListOfMoves,Size),
+Size =:= 0,*/
+
 
 
