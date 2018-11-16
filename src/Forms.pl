@@ -39,19 +39,18 @@ gameVComCycle(Board,Size,Player):-
 print_tab(Board,Size,0),nl,
 print_info(Board),
 (
-    game_over(NewBoard,Winner) -> print_tab(NewBoard,Size,0),write('Player '), write(Winner) , write(' wins!'); 
+    game_over(Board,Winner) -> print_tab(Board,Size,0),write('Player '), write(Winner) , write(' wins!'); 
     (
-        Player =:= 1 -> readPlay([Xs,Ys,Xf,Yf],Player,Board),
-                        completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
-                        gameVComCycle(NewBoard,Size,2);
+    Player =:= 1 -> readPlay([Xs,Ys,Xf,Yf],Player,Board),
+    completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
+    gameVComCycle(NewBoard,Size,2);
 
-                        write('Computer Move: '),nl,
-                        getRandomPlay(Board,Player,[Xs,Ys,Xf,Yf]),
-                        makePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
-                        gameVComCycle(NewBoard,Size,1)
+    write('Computer Move: '),nl,
+    getRandomPlay(Board,Player,[Xs,Ys,Xf,Yf]),
+    makePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
+    gameVComCycle(NewBoard,Size,1)
     )
 ).
-
 
 
 
