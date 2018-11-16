@@ -11,7 +11,7 @@ processMenuChoice(Opt).
 gameCycle(Board,Player):-
 print_tab(Board,0),nl,
 readPlay([Xs,Ys,Xf,Yf],Player,Board),
-makePlay([Xs,Ys,Xf,Yf],Player,Board,NewBoard),
+completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
 (
     Player =:= 1 -> gameCycle(NewBoard,2);
     gameCycle(NewBoard,1)
