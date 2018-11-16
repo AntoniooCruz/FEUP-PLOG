@@ -170,3 +170,10 @@ put_code(0),
 write(LineN),
 put_code(0).
 
+print_info(Board):-
+value(Board,1,White),
+value(Board,2,Black),
+write('White pieces : '),
+write(White),nl,
+write('Black pieces : '),
+write(Black),nl.
