@@ -7,7 +7,7 @@ X1 is X - 1,
 createEmptyRow(X1,Row).
 
 /*Aux function for createEmptyBoard*/
-createEmptyColumns(0, Row, []).
+createEmptyColumns(0, _, []).
 createEmptyColumns(Y, Row, [Row | Board]):-
 Y1 is Y - 1,
 createEmptyColumns(Y1, Row, Board).
@@ -38,7 +38,7 @@ nth0(X, Row, Element).
 /*Makes a players play, replaces the cell in coordinates (0,1) with the character(2), on a board(3), returns the resulting board(4)*/
 insertPiece(X, Y, Player, OldB, NewB):-
 nth0(Y, OldB, Row, RestRows),
-nth0(X, Row, Element, RestOfRow),
+nth0(X, Row, _Element, RestOfRow),
 insert(RestOfRow, Player, X, NewRow),
 insert(RestRows, NewRow, Y, NewB).
 
@@ -57,7 +57,7 @@ insertPiece(X2,Y2,Player,OldB1,NewB)); (write('Invalid play!'), fail).
 
 
 /*Checks if an element in the list has the coordinates given*/
-checkCoordinates(X,Y,[]):-fail.
+checkCoordinates(_,_,[]):-fail.
 checkCoordinates(X,Y,[H|T]):-
 compareCoords(X,Y,H);
 checkCoordinates(X,Y,T).
@@ -68,36 +68,24 @@ Y == H,
 compareCoords2(X,T).
 
 /*Checks if the Y coordinates are the unifiable*/
-compareCoords2(X,[H|T]):- X == H.
+compareCoords2(X,[H|_T]):- X == H.
 
 
-checkColour(Colour,[H | [H1|[T1| E]]]):-
+checkColour(Colour,[_H | [_H1|[T1| _E]]]):-
 T1 == Colour.
 
-countPieces(_,[],_,[]).
-countPiecesAdd(_,[],_,[]).
-
-countPiecesColour(Colour, [H|T], length(List2)):-
-append([],[],List2),
-checkColour(Colour, H) -> countPiecesAdd(Colour, T, H, List2); countPieces(Colour, T, H, List2).
-
-countPiecesAdd(Colour, [H|T], Element, [Element | List2]):-
-checkColour(Colour, H) -> countPiecesAdd(Colour, T, H, List2); countPieces(Colour, T, H, List2).
-
-countPieces(Colour, [H|T], Element, List2):-
-checkColour(Colour, H) -> countPiecesAdd(Colour, T, H, List2); countPieces(Colour, T, H, List2).
 
 /*Extracts the stone(1/2) of the first element of a list of lists of type [CoordX,CoordY,Stone]*/
-extractFirstStone([[E1|[E2|S]]|T], Stone):-
+extractFirstStone([[_E1|[_E2|S]]|_T], Stone):-
 Stone is S.
 
-extractStone(X,Y,[[Y|[X|S]]| T],Stone):-
+extractStone(X,Y,[[Y|[X|S]]| _T],Stone):-
 Stone is S.
 
 extractStone(_,_,[], Stone):-
 Stone is 0.
 
-extractStone(X,Y,[[Y1|[X1|S]]| T],Stone):-
+extractStone(X,Y,[[_Y1|[_X1|_S]]| T],Stone):-
 extractStone(X,Y,T,Stone).
 
 
@@ -108,7 +96,7 @@ boardAfterPlay([Head|Tail], DimX, DimY, NewBoard):-
 X = 0, Y = 0,
 (checkCoordinates(X,Y,[Head| Tail]) -> (extractFirstStone([Head| Tail], S), addCell(X, Y, Tail, S, Row, DimX, DimY, NewBoard)); (S is 0, addCell(X, Y, [Head| Tail], S , Row, DimX, DimY, NewBoard))).
 
-addCell(X, DimY, [Head| Tail], S,  [S | Row], DimX, DimY, NewBoard).
+addCell(_X, DimY, [_Head| _Tail], S,  [S | _Row], _DimX, DimY, _NewBoard).
 addCell(DimX, Y, [Head| Tail], S, Row, DimX, DimY, [Row| NewBoard]):- Y1 is (Y + 1), X1 = 0, append([],[],Row1), addCell(X1, Y1, [Head| Tail], S, Row1, DimX, DimY, NewBoard).
 
 
@@ -116,15 +104,12 @@ addCell(X,Y,[Head| Tail],S,[S | Row], DimX, DimY, NewBoard):-
 X1 is X + 1,
 (checkCoordinates(X1,Y,[Head| Tail]) -> (extractFirstStone([Head| Tail], S), addCell(X1, Y, Tail, S, Row, DimX, DimY, NewBoard)); (S is 0, addCell(X1, Y, [Head| Tail], S , Row, DimX, DimY, NewBoard))).
 
-
-
-makeRowAfter([H|T], DimX, DimX, Y, [], S).
-
 makeRowAfterFirst([H|T], X, DimX, Y, NewRow):-
 extractStone(X, Y, [H|T], S1),
 makeRowAfter([H|T], X, DimX, Y, NewRow, S1).
 
 
+makeRowAfter([_H|_T], DimX, DimX, _Y, [], _S).
 makeRowAfter([H|T], X, DimX, Y, [S | NewRow], S):-
 X1 is X + 1,
 extractStone(X1, Y, [H|T], S1),
@@ -138,7 +123,7 @@ makeRowAfterFirst([H|T], X, DimX, Y, NewRow1),
 Y1 is Y +1,
 makeBoardAfter([H|T], Y1, DimX, DimY, NewBoard, NewRow1).
 
-makeBoardAfter([H|T], DimY, _, DimY, [NewRow| []], NewRow).
+makeBoardAfter([_H|_T], DimY, _, DimY, [NewRow| []], NewRow).
 makeBoardAfter([H|T], Y, DimX, DimY, [NewRow | NewBoard], NewRow):-
 X is 0,
 makeRowAfterFirst([H|T], X, DimX, Y, NewRow1),
@@ -331,10 +316,6 @@ append(NewK, [], NewK1).
 /*sort can be used to eliminate duplicate elements and to sort the list*/
 
 
-/*Verifies if a certain move is valid*/
-getPos(X,Y,Element,Board):-
-nth0(Y, Board, Row),
-nth0(X, Row, Element).
 
 validMove([Xs,Ys,Xf,Yf],Board,Player):-
 getPos(Xs,Ys,ElementStart,Board),
@@ -365,9 +346,9 @@ sort(ListOfMoves,NoDupList),
 addValueToList(NoDupList,Board,Player,[[]],ValueListOfMoves),
 list_length(ValueListOfMoves,Size),
 Move is Size - 1,
-nth0(Move,ValueListOfMoves,[Val,Xs,Ys,Xf,Yf]).
+nth0(Move,ValueListOfMoves,[_Val,Xs,Ys,Xf,Yf]).
 
-addValueToList(1,Board,Player,Acc,Acc).
+addValueToList(1,_Board,_Player,Acc,Acc).
 addValueToList([],Board,Player,Acc,ValueListOfMoves):-
 sort(Acc,Acc2),
 addValueToList(1,Board,Player,Acc2,ValueListOfMoves).
@@ -407,7 +388,7 @@ game_over(Board, 1) :-
 game_over(Board, 2) :-
 	countsPieces(Board, 2, 0, 0).
 
-countsPieces([],Piece,Count,Count).
+countsPieces([],_Piece,Count,Count).
 
 countsPieces([H|T],Piece,Amount,Acc):-
 count_el(H,Counter,Piece,0),
@@ -415,14 +396,14 @@ Acc2 is Counter + Acc,
 !,
 countsPieces(T,Piece,Amount,Acc2).
 
-count_el([], Count,Element, Count).
+count_el([], Count,_Element, Count).
 
 count_el([H | T], Count,Element, Acc) :-
     H is Element, !,
     Acc2 is Acc + 1,
     count_el(T, Count,Element,Acc2).
 
-count_el([H | T], Count,Element,Acc) :-
+count_el([_H | T], Count,Element,Acc) :-
     count_el(T, Count,Element,Acc).
 
 /*Avalia*/
