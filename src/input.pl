@@ -3,10 +3,17 @@ getChar(Opt):-
 get_char(Opt),
 skip_line.
 
+checksNumber(Number):-
+repeat,
+catch(read(Number), 
+        error(Err,_Context),
+        format('Error in Input! Try Again. ~w\n', [Err])),
+number(Number),
+Number < 20.
+
 boardSize(Size):-
-write('Choose the size of the board you want to play (Must be an even number): '),
-getChar(SizeChar),
-number_chars(Temp,[SizeChar]),
+write('Choose the size of the board you want to play (Must be an even number below 20): '),
+checksNumber(Temp),
 (
     Temp mod 2 =\= 0 -> write('Must be an even size'),nl,boardSize(Size);
     Size is Temp 
@@ -16,21 +23,17 @@ readPlay([Xs,Ys,Xf,Yf],Player,Board):-
 write('Player '),write(Player),nl,
 write('Piece that you want to move: '),nl,
 write('Collumn: '),
-getChar(XsChar),
-number_chars(TempX,[XsChar]),nl,
+checksNumber(TempX),
 Xst is TempX - 1,
 write('Row: '),
-getChar(YsChar),
-number_chars(TempY,[YsChar]),nl,
+checksNumber(TempY),
 Yst is TempY - 1,
 write('Place to move the piece: '),nl,
 write('Collumn: '),
-getChar(XfChar),
-number_chars(TempX2,[XfChar]),nl,
+checksNumber(TempX2),
 Xft is TempX2 - 1,
 write('Row: '),
-getChar(YfChar),
-number_chars(TempY2,[YfChar]),nl,
+checksNumber(TempY2),
 Yft is TempY2 - 1,
 (
     validMove([Xst,Yst,Xft,Yft],Board,Player) -> write('Valid Move'),nl,
