@@ -14,25 +14,21 @@ print_info(Board),
 readPlay([Xs,Ys,Xf,Yf],Player,Board),
 completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
 (
-    game_over(NewBoard,Winner) -> print_tab(NewBoard,Size,0), write('Player '), write(Winner) , write(' wins!'); 
-    (
-    Player =:= 1 -> gameCycle(NewBoard,Size,2);
-    gameCycle(NewBoard,Size,1)
-    )
+game_over(NewBoard,Winner) -> print_tab(NewBoard,Size,0), write('Player '), write(Winner) , write(' wins!'); 
+NextPlayer is (Player mod 2) + 1,
+gameCycle(NewBoard,Size,NextPlayer)    
 ).
 
 comCycle(Board,Size,Player):-
 print_tab(Board,Size,0),nl,
 print_info(Board),
 write('Player '),write(Player),write(' turn'),nl,
-getRandomPlay(Board,Player,[Xs,Ys,Xf,Yf]),
+choose_move(Board,Player,2,[Xs,Ys,Xf,Yf]),
 completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
 (
-    game_over(NewBoard,Winner) -> print_tab(NewBoard,Size,0),write('Player '), write(Winner) , write(' wins!'); 
-    (
-    Player =:= 1 -> comCycle(NewBoard,Size,2);
-    comCycle(NewBoard,Size,1)
-    )
+game_over(NewBoard,Winner) -> print_tab(NewBoard,Size,0),write('Player '), write(Winner) , write(' wins!'); 
+NextPlayer is (Player mod 2) + 1,
+comCycle(NewBoard,Size,NextPlayer) 
 ).
 
 gameVComCycle(Board,Size,Player):-
@@ -46,7 +42,7 @@ print_info(Board),
     gameVComCycle(NewBoard,Size,2);
 
     write('Computer Move: '),nl,
-    getRandomPlay(Board,Player,[Xs,Ys,Xf,Yf]),
+    choose_move(Board,Player,1,[Xs,Ys,Xf,Yf]),
     completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
     gameVComCycle(NewBoard,Size,1)
     )
