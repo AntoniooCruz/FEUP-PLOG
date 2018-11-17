@@ -224,6 +224,7 @@ checkRight(0,0,OldB,New4,Acc2),
 append(New2,New4,NewB1),
 sort(NewB1,NewB).
 
+/*
 removePieces(6,6,Element,OldB, [[6,6,Element] | NewB],Acc):-
 append([[6,6,Element]],Acc,Acc1),
 checkUp(6,6,OldB,New2,Acc1),
@@ -231,6 +232,7 @@ append(New2,[],New2a), append(New2a, Acc1, Acc2),
 checkLeft(6,6,OldB,New4,Acc2),
 append(New2,New4,NewB1),
 sort(NewB1,NewB).
+
 
 removePieces(6,0,Element,OldB, [[0,6,Element] | NewB],Acc):-
 append([[0,6,Element]],Acc,Acc1),
@@ -247,7 +249,7 @@ append(New2,[],New2a), append(New2a, Acc1, Acc2),
 checkRight(0,6,OldB,New3,Acc2),
 append(New2,New3,NewB1),
 sort(NewB1,NewB).
-
+*/
 
 removePieces(X,0,Element,OldB, [[0,X,Element] | NewB],Acc):-
 append([[0,X,Element]],Acc,Acc1),
@@ -260,7 +262,7 @@ append(New2,New3,NewA2),
 append(NewA2, New4, NewB1),
 sort(NewB1,NewB).
 
-
+/*
 removePieces(X,6,Element,OldB, [[6,X,Element] | NewB],Acc):-
 append([[6,X,Element]],Acc,Acc1),
 checkUp(X,6,OldB,New2,Acc1),
@@ -271,7 +273,7 @@ checkRight(X,6,OldB,New4,Acc3),
 append(New2,New3,NewA2),
 append(NewA2, New4, NewB1),
 sort(NewB1,NewB).
-
+*/
 
 removePieces(0,Y,Element,OldB, [[Y,0,Element] | NewB],Acc):-
 append([[Y,0,Element]],Acc,Acc1),
@@ -284,7 +286,7 @@ append(New2,New3,NewA2),
 append(NewA2, New4, NewB1),
 sort(NewB1,NewB).
 
-
+/*
 removePieces(6,Y,Element,OldB, [[Y,6,Element] | NewB],Acc):-
 append([[Y,6,Element]],Acc,Acc1),
 checkUp(6,Y,OldB,New2,Acc1),
@@ -295,7 +297,7 @@ checkLeft(6,Y,OldB,New4,Acc3),
 append(New2,New3,NewA2),
 append(NewA2, New4, NewB1),
 sort(NewB1,NewB).
-
+*/
 
 
 
