@@ -145,6 +145,7 @@ drawLastLine(N,C1).
 
 drawCoordinates(Size):-drawCoordinates(Size,1).
 drawCoordinates(Size,Size):-
+Size < 10,
 put_code(0x2551),
 put_code(0),
 write(Size),
@@ -156,7 +157,24 @@ put_code(0),
 put_code(0x2551),
 nl.
 
+drawCoordinates(Size):-drawCoordinates(Size,1).
+drawCoordinates(Size,Size):-
+Size > 9,
+put_code(0x2551),
+put_code(0),
+Code is 55 + Size,
+char_code(Text,Code),
+write(Text),
+put_code(0),
+put_code(0x2551),
+put_code(0),
+put_code(0),
+put_code(0),
+put_code(0x2551),
+nl.
+
 drawCoordinates(Size,Counter):-
+Counter < 10,
 put_code(0x2551),
 put_code(0),
 write(Counter),
@@ -164,7 +182,28 @@ put_code(0),
 C1 is Counter + 1,
 drawCoordinates(Size,C1).
 
+drawCoordinates(Size,Counter):-
+Counter > 9,
+put_code(0x2551),
+put_code(0),
+Code is 55 + Counter,
+char_code(Text,Code),
+write(Text),
+put_code(0),
+C1 is Counter + 1,
+drawCoordinates(Size,C1).
+
 drawCoord(LineN):-
+LineN > 9,
+put_code(0x2551),
+put_code(0),
+Code is 55 + LineN,
+char_code(Text,Code),
+write(Text),
+put_code(0).
+
+drawCoord(LineN):-
+LineN < 10,
 put_code(0x2551),
 put_code(0),
 write(LineN),

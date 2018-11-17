@@ -9,10 +9,10 @@ write('|_______________________________________________|'),nl,nl.
 
 
 processMenuChoice(Response):-
-(Response == '1') -> startPvpGame,nl;
-(Response == '2') -> startPvCGame,nl;
-(Response == '3') -> startCvCGame,nl;
-(Response == '4') -> write('exit '),nl, \+fail.
+(Response == 1) -> startPvpGame,nl;
+(Response == 2) -> startPvCGame,nl;
+(Response == 3) -> startCvCGame,nl;
+(Response == 4) -> write('exit '),nl, \+fail.
 
 startPvpGame:-
 boardSize(Size),

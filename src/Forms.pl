@@ -5,7 +5,7 @@
 
 forms:-
 menuDisplay,
-getChar(Opt),
+checksNumber(Opt),
 processMenuChoice(Opt).
 
 gameCycle(Board,Size,Player):-
