@@ -220,6 +220,14 @@ getPos(Xf,Yf,ElementEnd,Board),
 ElementStart =:= Player,
 ElementEnd =\= Player,
 ElementEnd =\= 0.
+/*Chooses Computer Play*/
+choose_move(Board,Player,Level,[Xs,Ys,Xf,Yf]):-
+Level =:= 1,
+getRandomPlay(Board,Player,[Xs,Ys,Xf,Yf]).
+
+choose_move(Board,Player,Level,[Xs,Ys,Xf,Yf]):-
+Level =:= 2,
+getBestPlay(Board,Player,[Xs,Ys,Xf,Yf]).
 
 /*Chooses a Random Play*/
 getRandomPlay(Board,Player,[Xs,Ys,Xf,Yf]):-
@@ -227,6 +235,38 @@ findall([Xs,Ys,Xf,Yf],validMove([Xs,Ys,Xf,Yf],Board,Player),ListOfMoves),
 list_length(ListOfMoves,Size),
 random(0,Size,Move),
 nth0(Move,ListOfMoves,[Xs,Ys,Xf,Yf]).
+
+/*Chooses Best Play*/
+getBestPlay(Board,Player,[Xs,Ys,Xf,Yf]):-
+findall([Xs,Ys,Xf,Yf],validMove([Xs,Ys,Xf,Yf],Board,Player),ListOfMoves),
+sort(ListOfMoves,NoDupList),
+addValueToList(NoDupList,Board,Player,[[]],ValueListOfMoves),
+list_length(ValueListOfMoves,Size),
+Move is Size - 1,
+nth0(Move,ValueListOfMoves,[Val,Xs,Ys,Xf,Yf]).
+
+addValueToList(1,Board,Player,Acc,Acc).
+addValueToList([],Board,Player,Acc,ValueListOfMoves):-
+sort(Acc,Acc2),
+addValueToList(1,Board,Player,Acc2,ValueListOfMoves).
+
+addValueToList([H|T],Board,Player,Acc,ValueListOfMoves):-
+nth0(0,H,Xs),
+nth0(1,H,Ys),
+nth0(2,H,Xf),
+nth0(3,H,Yf),
+completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
+value(Board,Player,Before),
+value(NewBoard,Player,After),
+PlayerPieces is Before - After,
+EnemyPlayer is (Player mod 2) + 1,
+value(Board,EnemyPlayer,EnemyBefore),
+value(NewBoard,EnemyPlayer,EnemyAfter),
+EnemyPieces is EnemyBefore - EnemyAfter,
+Value is PlayerPieces - EnemyPieces,
+append([Value],H,NewMove),
+append([NewMove],Acc,NewList),
+addValueToList(T,Board,Player,NewList,ValueListOfMoves).
 
 
 /*Calculates the length of a list*/
@@ -266,7 +306,4 @@ count_el([H | T], Count,Element,Acc) :-
 /*Avalia*/
 value(Board,Player,Value):-
 countsPieces(Board,Player,Value,0).
-
-
-
 

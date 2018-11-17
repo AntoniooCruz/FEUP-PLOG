@@ -17,14 +17,14 @@ processMenuChoice(Response):-
 startPvpGame:-
 boardSize(Size),
 createBoard(Size,[],Board),
-gameCycle(Board,Size,1).
+gameCycle(Board,Size,2).
 
 startCvCGame:-
 boardSize(Size),
 createBoard(Size,[],Board),
-comCycle(Board,Size,1).
+comCycle(Board,Size,2).
 
 startPvCGame:-
 boardSize(Size),
 createBoard(Size,[],Board),
-gameVComCycle(Board,Size,1).
+gameVComCycle(Board,Size,2).
