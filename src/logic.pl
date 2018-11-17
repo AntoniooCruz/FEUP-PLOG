@@ -52,6 +52,8 @@ makePlay(X1,Y1,X2,Y2,Player,OldB,NewB):-
 validPlay(X2,Y2,Player,OldB) -> (insertPiece(X1,Y1,0,OldB,OldB1),
 insertPiece(X2,Y2,Player,OldB1,NewB)); (write('Invalid play!'), fail).
 
+
+
 /*Checks if the cell above has a stone*/
 checkUp(X,Y,OldB, NewB):-
 Y1 is Y - 1, 
@@ -174,7 +176,7 @@ makeBoardAfter([H|T], Y1, DimX, DimY, NewBoard, NewRow1).
 
 completePlay(X1,Y1,X2,Y2,Player,[H|T],NewB):-
 makePlay(X1,Y1,X2,Y2,Player, [H|T], NewB1),
-removePieces2(X2,Y2,NewB1, List),
+removePieces2(X2,Y2,NewB1, List, Player),
 sort(List, SortedList),
 list_length([H|T], LengthY),
 list_length(H, LengthX),
@@ -193,7 +195,7 @@ append(New1,New2,NewA1),
 append(NewA1,New3,NewA2),
 append(NewA2, New4, NewB).
 
-removePieces2(X, Y, OldB, NewB):-
+removePieces2(X, Y, OldB, NewB, Player):-
 insertPiece(X, Y, 5, OldB, OldB1),
 (Y \= 0 -> checkUp(X,Y,OldB1,New1); 1=1),
 (Y \= 6 -> checkDown(X,Y,OldB1,New2); 1=1),
@@ -202,7 +204,8 @@ insertPiece(X, Y, 5, OldB, OldB1),
 append(New1,New2,NewA1),
 append(NewA1,New3,NewA2),
 append(NewA2, New4, NewK),
-append(NewK, [], NewB).
+append(NewK1, [[Y,X,Player]], NewB),
+append(NewK, [], NewK1).
 /*sort can be used to eliminate duplicate elements and to sort the list*/
 
 
