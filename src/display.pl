@@ -216,3 +216,12 @@ write('White pieces : '),
 write(White),nl,
 write('Black pieces : '),
 write(Black),nl.
+
+writeMove(Xs,Ys,Xf,Yf):-
+X is Xs + 1,
+Y is Ys + 1,
+X1 is Xf + 1,
+Y1 is Yf + 1,
+write('Moved from: '),
+write('['), write(X), write(' | '),write(Y),write(']'), 
+write(' To '), write('['),write(X1), write(' | '),write(Y1),write(']'),nl.
