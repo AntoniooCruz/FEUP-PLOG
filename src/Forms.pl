@@ -26,7 +26,7 @@ print_tab(Board,Size,0),nl,
 print_info(Board),
 write('Player '),write(Player),write(' turn'),nl,
 getRandomPlay(Board,Player,[Xs,Ys,Xf,Yf]),
-makePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
+completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
 (
     game_over(NewBoard,Winner) -> print_tab(NewBoard,Size,0),write('Player '), write(Winner) , write(' wins!'); 
     (
@@ -47,7 +47,7 @@ print_info(Board),
 
     write('Computer Move: '),nl,
     getRandomPlay(Board,Player,[Xs,Ys,Xf,Yf]),
-    makePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
+    completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
     gameVComCycle(NewBoard,Size,1)
     )
 ).

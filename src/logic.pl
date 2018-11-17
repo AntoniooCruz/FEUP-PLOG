@@ -54,35 +54,7 @@ insertPiece(X2,Y2,Player,OldB1,NewB)); (write('Invalid play!'), fail).
 
 
 
-/*Checks if the cell above has a stone*/
-checkUp(X,Y,OldB, NewB):-
-Y1 is Y - 1, 
-nth0(Y1, OldB, Row),
-nth0(X, Row, Element),
-(Element == 1 ; Element == 2) -> removePieces(X,Y1,Element,OldB,NewB); removePieces(X,Y,Element,[],NewB).
 
-/*Checks if the cell below has a stone*/
-checkDown(X,Y,OldB, NewB):-
-Y1 is Y + 1, 
-nth0(Y1, OldB, Row),
-nth0(X, Row, Element),
-(Element == 1 ; Element == 2) -> removePieces(X,Y1, Element, OldB, NewB); removePieces(X,Y,Element,[],NewB).
-
-
-/*Checks if the cell to the left has a stone*/
-checkLeft(X,Y,OldB,NewB):-
-X1 is X - 1, 
-nth0(Y, OldB, Row),
-nth0(X1, Row, Element),
-(Element == 1 ; Element == 2) -> removePieces(X1,Y, Element, OldB, NewB); removePieces(X,Y,Element,[],NewB).
-
-
-/*Checks if the cell to the right has a stone*/
-checkRight(X,Y,OldB,NewB):-
-X1 is X + 1, 
-nth0(Y, OldB, Row),
-nth0(X1, Row, Element),
-(Element == 1 ; Element == 2) -> removePieces(X1,Y, Element, OldB, NewB); removePieces(X,Y,Element,[],NewB).
 
 /*Checks if an element in the list has the coordinates given*/
 checkCoordinates(X,Y,[]):-fail.
@@ -182,7 +154,35 @@ list_length([H|T], LengthY),
 list_length(H, LengthX),
 makeBoardAfterFirst(SortedList,0,LengthX,LengthY,NewB).
 
+/*Checks if the cell above has a stone*/
+checkUp(X,Y,OldB, NewB):-
+Y1 is Y - 1, 
+nth0(Y1, OldB, Row),
+nth0(X, Row, Element),
+(Element == 1 ; Element == 2) -> removePieces(X,Y1,Element,OldB,NewB); removePieces(X,Y,Element,[],NewB).
 
+/*Checks if the cell below has a stone*/
+checkDown(X,Y,OldB, NewB):-
+Y1 is Y + 1, 
+nth0(Y1, OldB, Row),
+nth0(X, Row, Element),
+(Element == 1 ; Element == 2) -> removePieces(X,Y1, Element, OldB, NewB); removePieces(X,Y,Element,[],NewB).
+
+
+/*Checks if the cell to the left has a stone*/
+checkLeft(X,Y,OldB,NewB):-
+X1 is X - 1, 
+nth0(Y, OldB, Row),
+nth0(X1, Row, Element),
+(Element == 1 ; Element == 2) -> removePieces(X1,Y, Element, OldB, NewB); removePieces(X,Y,Element,[],NewB).
+
+
+/*Checks if the cell to the right has a stone*/
+checkRight(X,Y,OldB,NewB):-
+X1 is X + 1, 
+nth0(Y, OldB, Row),
+nth0(X1, Row, Element),
+(Element == 1 ; Element == 2) -> removePieces(X1,Y, Element, OldB, NewB); removePieces(X,Y,Element,[],NewB).
 
 removePieces(_,_,_,[],[]).
 removePieces(X, Y, Element, OldB, [[Y,X,Element] | NewB]):-
@@ -232,7 +232,7 @@ nth0(Move,ListOfMoves,[Xs,Ys,Xf,Yf]).
 /*Calculates the length of a list*/
 list_length(Xs,L) :- list_length(Xs,0,L) .
 
-list_length( []     , L , L ) .
+list_length( [], L , L ) .
 list_length( [_|Xs] , T , L ) :-
   T1 is T+1 ,
   list_length(Xs,T1,L).
