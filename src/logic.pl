@@ -176,8 +176,8 @@ completePlay(X1,Y1,X2,Y2,Player,[H|T],NewB):-
 makePlay(X1,Y1,X2,Y2,Player, [H|T], NewB1),
 removePieces2(X2,Y2,NewB1, List),
 sort(List, SortedList),
-length([H|T], LengthY),
-length(H, LengthX),
+list_length([H|T], LengthY),
+list_length(H, LengthX),
 makeBoardAfterFirst(SortedList,0,LengthX,LengthY,NewB).
 
 
