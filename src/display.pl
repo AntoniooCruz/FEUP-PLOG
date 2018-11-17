@@ -41,34 +41,139 @@ createBlackLine(Size,Line,F):-
 
 createBlackLine(0,Line,Line).
 
-print_tab([]).
-print_tab([],X).
-print_tab([L|T],X):-
-Counter is X+1,
-print_line(L),
-write(Counter),nl,
-print_tab(T,Counter).
 
-print_line([]).
-print_line([Counter|L]):-
-print_cell(Counter),
-print_line(L).
+
+
+
+
+
+
+
+print_tab([],Size).
+print_tab([],Size,X):-
+drawCoordinates(Size),
+drawLastLine(Size).
+
+print_tab([L|T],Size,X):-
+(
+    X =:= 0 -> drawFirstLine(Size); 1 =:= 1
+),
+Counter is X+1,
+print_line(L,Counter,0),
+print_tab(T,Size,Counter).
+
+print_line([],LineN,Counter):-
+lineDivider(Counter,Counter,LineN).
+
+print_line([Cell|L],LineN,Counter):-
+put_code(0x2551),
+put_code(0),
+print_cell(Cell),
+put_code(0),
+C1 is Counter + 1,
+print_line(L,LineN,C1).
 
 print_cell(X):- 
 traduz(X,V),
-write('|'),
-put_code(V),
-write('|').
+put_code(V).
 
 
 traduz(0,0).
 traduz(1,0x25CB).
 traduz(2,0x25CF).
 
-firstLine(N,Counter):-
-    N > 0,
-    C1 is Counter + 1,
-    write(C1),
-    write(' |'),
-    N1 is N - 1,
-    firstLine(N1,C1).
+drawFirstLine(N):- drawFirstLine(N + 1,N + 1).
+drawFirstLine(N,1):-
+put_code(0x2566),
+put_code(0x2550),
+put_code(0x2550),
+put_code(0x2550),
+put_code(0x2557),
+nl.
+
+drawFirstLine(N,Counter):-
+(
+    N =:= Counter -> put_code(0x2554);
+    put_code(0x2566)
+),
+put_code(0x2550),
+put_code(0x2550),
+put_code(0x2550),
+C1 is Counter - 1,
+drawFirstLine(N,C1).
+
+lineDivider(N,0,LineN):-
+put_code(0x256c),
+put_code(0x2550),
+put_code(0x2550),
+put_code(0x2550),
+put_code(0x2563),
+nl.
+
+
+lineDivider(N,Counter,LineN):-
+(
+    N =:= Counter -> drawCoord(LineN),put_code(0x2551),nl,put_code(0x2560);
+    put_code(0x256c)
+),
+put_code(0x2550),
+put_code(0x2550),
+put_code(0x2550),
+C1 is Counter - 1,
+lineDivider(N,C1,LineN).
+
+
+drawLastLine(N):- drawLastLine(N + 1,N + 1).
+drawLastLine(N,1):-
+put_code(0x2569),
+put_code(0x2550),
+put_code(0x2550),
+put_code(0x2550),
+put_code(0x255d),
+nl.
+
+drawLastLine(N,Counter):-
+(
+    N =:= Counter -> put_code(0x255a);
+    put_code(0x2569)
+),
+put_code(0x2550),
+put_code(0x2550),
+put_code(0x2550),
+C1 is Counter - 1,
+drawLastLine(N,C1).
+
+drawCoordinates(Size):-drawCoordinates(Size,1).
+drawCoordinates(Size,Size):-
+put_code(0x2551),
+put_code(0),
+write(Size),
+put_code(0),
+put_code(0x2551),
+put_code(0),
+put_code(0),
+put_code(0),
+put_code(0x2551),
+nl.
+
+drawCoordinates(Size,Counter):-
+put_code(0x2551),
+put_code(0),
+write(Counter),
+put_code(0),
+C1 is Counter + 1,
+drawCoordinates(Size,C1).
+
+drawCoord(LineN):-
+put_code(0x2551),
+put_code(0),
+write(LineN),
+put_code(0).
+
+print_info(Board):-
+value(Board,1,White),
+value(Board,2,Black),
+write('White pieces : '),
+write(White),nl,
+write('Black pieces : '),
+write(Black),nl.

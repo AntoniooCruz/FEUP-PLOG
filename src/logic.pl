@@ -234,5 +234,36 @@ list_length( [_|Xs] , T , L ) :-
   T1 is T+1 ,
   list_length(Xs,T1,L).
 
+/*Checks if the game is over*/
+
+game_over(Board, 1) :-
+	countsPieces(Board, 1, 0, 0).
+
+game_over(Board, 2) :-
+	countsPieces(Board, 2, 0, 0).
+
+countsPieces([],Piece,Count,Count).
+
+countsPieces([H|T],Piece,Amount,Acc):-
+count_el(H,Counter,Piece,0),
+Acc2 is Counter + Acc,
+!,
+countsPieces(T,Piece,Amount,Acc2).
+
+count_el([], Count,Element, Count).
+
+count_el([H | T], Count,Element, Acc) :-
+    H is Element, !,
+    Acc2 is Acc + 1,
+    count_el(T, Count,Element,Acc2).
+
+count_el([H | T], Count,Element,Acc) :-
+    count_el(T, Count,Element,Acc).
+
+/*Avalia*/
+value(Board,Player,Value):-
+countsPieces(Board,Player,Value,0).
+
+
 
 
