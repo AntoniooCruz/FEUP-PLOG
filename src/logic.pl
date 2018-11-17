@@ -155,52 +155,172 @@ list_length(H, LengthX),
 makeBoardAfterFirst(SortedList,0,LengthX,LengthY,NewB).
 
 /*Checks if the cell above has a stone*/
-checkUp(X,Y,OldB, NewB):-
+checkUp(X,Y,OldB, NewB,Acc):-
 Y1 is Y - 1, 
 nth0(Y1, OldB, Row),
 nth0(X, Row, Element),
-(Element == 1 ; Element == 2) -> removePieces(X,Y1,Element,OldB,NewB); removePieces(X,Y,Element,[],NewB).
+((Element == 1 ; Element == 2), \+checkCoordinates(X,Y1,Acc)) -> removePieces(X,Y1,Element,OldB,NewB,Acc); removePieces(X,Y,Element,[],NewB,Acc).
 
 /*Checks if the cell below has a stone*/
-checkDown(X,Y,OldB, NewB):-
+checkDown(X,Y,OldB, NewB,Acc):-
 Y1 is Y + 1, 
 nth0(Y1, OldB, Row),
 nth0(X, Row, Element),
-(Element == 1 ; Element == 2) -> removePieces(X,Y1, Element, OldB, NewB); removePieces(X,Y,Element,[],NewB).
+((Element == 1 ; Element == 2), \+checkCoordinates(X,Y1,Acc)) -> removePieces(X,Y1, Element, OldB, NewB,Acc); removePieces(X,Y,Element,[],NewB,Acc).
 
 
 /*Checks if the cell to the left has a stone*/
-checkLeft(X,Y,OldB,NewB):-
+checkLeft(X,Y,OldB,NewB,Acc):-
 X1 is X - 1, 
 nth0(Y, OldB, Row),
 nth0(X1, Row, Element),
-(Element == 1 ; Element == 2) -> removePieces(X1,Y, Element, OldB, NewB); removePieces(X,Y,Element,[],NewB).
+((Element == 1 ; Element == 2), \+checkCoordinates(X1,Y,Acc)) -> removePieces(X1,Y, Element, OldB, NewB,Acc); removePieces(X,Y,Element,[],NewB,Acc).
 
 
 /*Checks if the cell to the right has a stone*/
-checkRight(X,Y,OldB,NewB):-
+checkRight(X,Y,OldB,NewB,Acc):-
 X1 is X + 1, 
 nth0(Y, OldB, Row),
 nth0(X1, Row, Element),
-(Element == 1 ; Element == 2) -> removePieces(X1,Y, Element, OldB, NewB); removePieces(X,Y,Element,[],NewB).
+((Element == 1 ; Element == 2), \+checkCoordinates(X1,Y,Acc))-> removePieces(X1,Y, Element, OldB, NewB,Acc); removePieces(X,Y,Element,[],NewB,Acc).
 
-removePieces(_,_,_,[],[]).
-removePieces(X, Y, Element, OldB, [[Y,X,Element] | NewB]):-
-insertPiece(X, Y, 5, OldB, OldB1),
-(Y \= 0 -> checkUp(X,Y,OldB1,New1); 1=1),
-(Y \= 6 -> checkDown(X,Y,OldB1,New2); 1=1),
-(X \= 0 -> checkLeft(X,Y,OldB1,New3); 1=1),
-(X \= 6 -> checkRight(X,Y,OldB1,New4); 1=1),
+
+checkUp2(X,Y,OldB, NewB):-
+Y1 is Y - 1, 
+nth0(Y1, OldB, Row),
+nth0(X, Row, Element),
+((Element == 1 ; Element == 2), \+checkCoordinates(X,Y1,[])) -> removePieces(X,Y1,Element,OldB,NewB,[]); removePieces(X,Y,Element,[],NewB,[]).
+
+/*Checks if the cell below has a stone*/
+checkDown2(X,Y,OldB, NewB,Acc):-
+Y1 is Y + 1, 
+nth0(Y1, OldB, Row),
+nth0(X, Row, Element),
+((Element == 1 ; Element == 2), \+checkCoordinates(X,Y1,Acc)) -> removePieces(X,Y1, Element, OldB, NewB,Acc); removePieces(X,Y,Element,[],NewB,acc).
+
+
+/*Checks if the cell to the left has a stone*/
+checkLeft2(X,Y,OldB,NewB,Acc):-
+X1 is X - 1, 
+nth0(Y, OldB, Row),
+nth0(X1, Row, Element),
+((Element == 1 ; Element == 2), \+checkCoordinates(X1,Y,Acc)) -> removePieces(X1,Y, Element, OldB, NewB,Acc); removePieces(X,Y,Element,[],NewB,Acc).
+
+
+/*Checks if the cell to the right has a stone*/
+checkRight2(X,Y,OldB,NewB,Acc):-
+X1 is X + 1, 
+nth0(Y, OldB, Row),
+nth0(X1, Row, Element),
+((Element == 1 ; Element == 2), \+checkCoordinates(X1,Y,Acc))-> removePieces(X1,Y, Element, OldB, NewB,Acc); removePieces(X,Y,Element,[],NewB,Acc).
+
+removePieces(_,_,_,[],[],_).
+
+removePieces(0,0,Element,OldB, [[0,0,Element] | NewB],Acc):-
+append([[0,0,Element]],Acc,Acc1),
+checkDown(0,0,OldB,New2,Acc1),
+append(New2,[],New2a), append(New2a, Acc1, Acc2),
+checkRight(0,0,OldB,New4,Acc2),
+append(New2,New4,NewB1),
+sort(NewB1,NewB).
+
+removePieces(6,6,Element,OldB, [[6,6,Element] | NewB],Acc):-
+append([[6,6,Element]],Acc,Acc1),
+checkUp(6,6,OldB,New2,Acc1),
+append(New2,[],New2a), append(New2a, Acc1, Acc2),
+checkLeft(6,6,OldB,New4,Acc2),
+append(New2,New4,NewB1),
+sort(NewB1,NewB).
+
+removePieces(6,0,Element,OldB, [[0,6,Element] | NewB],Acc):-
+append([[0,6,Element]],Acc,Acc1),
+checkDown(6,0,OldB,New2,Acc1),
+append(New2,[],New2a), append(New2a, Acc1, Acc2),
+checkLeft(6,0,OldB,New3,Acc2),
+append(New2,New3,NewB1),
+sort(NewB1,NewB).
+
+removePieces(0,6,Element,OldB, [[6,0,Element] | NewB],Acc):-
+append([[6,0,Element]],Acc,Acc1),
+checkUp(0,6,OldB,New2,Acc1),
+append(New2,[],New2a), append(New2a, Acc1, Acc2),
+checkRight(0,6,OldB,New3,Acc2),
+append(New2,New3,NewB1),
+sort(NewB1,NewB).
+
+
+removePieces(X,0,Element,OldB, [[0,X,Element] | NewB],Acc):-
+append([[0,X,Element]],Acc,Acc1),
+checkDown(X,0,OldB,New2,Acc1),
+append(New2,[],New2a), append(New2a, Acc1, Acc2),
+checkLeft(X,0,OldB,New3,Acc2),
+append(New3,[],New3a), append(New3a, Acc2, Acc3),
+checkRight(X,0,OldB,New4,Acc3),
+append(New2,New3,NewA2),
+append(NewA2, New4, NewB1),
+sort(NewB1,NewB).
+
+
+removePieces(X,6,Element,OldB, [[6,X,Element] | NewB],Acc):-
+append([[6,X,Element]],Acc,Acc1),
+checkUp(X,6,OldB,New2,Acc1),
+append(New2,[],New2a), append(New2a, Acc1, Acc2),
+checkLeft(X,6,OldB,New3,Acc2),
+append(New3,[],New3a), append(New3a, Acc2, Acc3),
+checkRight(X,6,OldB,New4,Acc3),
+append(New2,New3,NewA2),
+append(NewA2, New4, NewB1),
+sort(NewB1,NewB).
+
+
+removePieces(0,Y,Element,OldB, [[Y,0,Element] | NewB],Acc):-
+append([[Y,0,Element]],Acc,Acc1),
+checkUp(0,Y,OldB,New2,Acc1),
+append(New2,[],New2a), append(New2a, Acc1, Acc2),
+checkDown(0,Y,OldB,New3,Acc2),
+append(New3,[],New3a), append(New3a, Acc2, Acc3),
+checkRight(0,Y,OldB,New4,Acc3),
+append(New2,New3,NewA2),
+append(NewA2, New4, NewB1),
+sort(NewB1,NewB).
+
+
+removePieces(6,Y,Element,OldB, [[Y,6,Element] | NewB],Acc):-
+append([[Y,6,Element]],Acc,Acc1),
+checkUp(6,Y,OldB,New2,Acc1),
+append(New2,[],New2a), append(New2a, Acc1, Acc2),
+checkDown(6,Y,OldB,New3,Acc2),
+append(New3,[],New3a), append(New3a, Acc2, Acc3),
+checkLeft(6,Y,OldB,New4,Acc3),
+append(New2,New3,NewA2),
+append(NewA2, New4, NewB1),
+sort(NewB1,NewB).
+
+
+
+
+removePieces(X, Y, Element, OldB, [[Y,X,Element] | NewB],Acc):-
+append([[Y,X,Element]],Acc,Acc1),
+checkUp(X,Y,OldB,New1,Acc1),
+append(New1,[],New1a),append(Acc1,New1a,Acc2),
+checkDown(X,Y,OldB,New2,Acc2),
+append(New2,[],New2a),append(Acc2,New2a,Acc3),
+checkLeft(X,Y,OldB,New3,Acc3),
+append(New3,[],New3a),append(Acc3,New3a,Acc4),
+checkRight(X,Y,OldB,New4,Acc4),
 append(New1,New2,NewA1),
 append(NewA1,New3,NewA2),
-append(NewA2, New4, NewB).
+append(NewA2, New4, NewB1),
+sort(NewB1,NewB).
 
 removePieces2(X, Y, OldB, NewB, Player):-
-insertPiece(X, Y, 5, OldB, OldB1),
-(Y \= 0 -> checkUp(X,Y,OldB1,New1); 1=1),
-(Y \= 6 -> checkDown(X,Y,OldB1,New2); 1=1),
-(X \= 0 -> checkLeft(X,Y,OldB1,New3); 1=1),
-(X \= 6 -> checkRight(X,Y,OldB1,New4); 1=1),
+(Y \= 0 -> checkUp2(X,Y,OldB,New1); 1=1),
+append(New1,[],New1a),
+(Y \= 6 -> checkDown2(X,Y,OldB,New2,New1a); 1=1),
+append(New2,[],New2a),
+(X \= 0 -> checkLeft2(X,Y,OldB,New3,New2a); 1=1),
+append(New3,[],New3a),
+(X \= 6 -> checkRight2(X,Y,OldB,New4,New3a); 1=1),
 append(New1,New2,NewA1),
 append(NewA1,New3,NewA2),
 append(NewA2, New4, NewK),
