@@ -1,4 +1,4 @@
-display_game(Board,Player):-
+display_game(Board,_Player):-
     print_tab(Board,0).
     
 createBoard(N,Board,FinalBoard):-
@@ -22,7 +22,7 @@ createBoardList(N,Counter,Board,FinalBoard):-
     N1 is N - 1,
     C1 is Counter + 1,
     createBoardList(N1,C1,B1,FinalBoard).
-    createBoardList(0,Counter,Board,Board).
+    createBoardList(0,_Counter,Board,Board).
     
 
 createWhiteLine(Size,Line,F):-
@@ -49,8 +49,8 @@ createBlackLine(0,Line,Line).
 
 
 
-print_tab([],Size).
-print_tab([],Size,X):-
+print_tab([],_Size).
+print_tab([],Size,_X):-
 drawCoordinates(Size),
 drawLastLine(Size).
 
@@ -83,7 +83,7 @@ traduz(1,0x25CB).
 traduz(2,0x25CF).
 
 drawFirstLine(N):- drawFirstLine(N + 1,N + 1).
-drawFirstLine(N,1):-
+drawFirstLine(_N,1):-
 put_code(0x2566),
 put_code(0x2550),
 put_code(0x2550),
@@ -102,7 +102,7 @@ put_code(0x2550),
 C1 is Counter - 1,
 drawFirstLine(N,C1).
 
-lineDivider(N,0,LineN):-
+lineDivider(_N,0,_LineN):-
 put_code(0x256c),
 put_code(0x2550),
 put_code(0x2550),
@@ -124,7 +124,7 @@ lineDivider(N,C1,LineN).
 
 
 drawLastLine(N):- drawLastLine(N + 1,N + 1).
-drawLastLine(N,1):-
+drawLastLine(_N,1):-
 put_code(0x2569),
 put_code(0x2550),
 put_code(0x2550),
