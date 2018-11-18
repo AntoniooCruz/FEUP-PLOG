@@ -389,7 +389,7 @@ append([NewMove],Acc,NewList),
 addValueToList(T,Board,Player,NewList,ValueListOfMoves).
 
 % Calculates the amout of pieces removed from the enemy,
-% gives it a high value if the enemy is left with 0 pieces to prevent from making a game lossing play 
+% gives it a high value if the enemy is left with 0 pieces to prevent from making a game losing play 
 % enemyPiecesRemoved(+Before,+After,-EnemyPieces)
 
 enemyPiecesRemoved(Before,After,EnemyPieces):-
