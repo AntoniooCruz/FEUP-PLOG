@@ -40,3 +40,19 @@ Yft is TempY2 - 1,
     copy_term(Xst,Xs),copy_term(Yst,Ys),copy_term(Xft,Xf),copy_term(Yft,Yf);
     write('Invalid Move'),nl,nl,readPlay([Xs,Ys,Xf,Yf],Player,Board)
 ).
+
+readAILevel(Level):-
+repeat,
+write('AI Difficulty:'),nl,
+write('1 - Random '),nl,
+write('2 - Smart '),nl,
+checksDifficulty(Level).
+
+checksDifficulty(Number):-
+repeat,
+catch(read(Number), 
+        error(Err,_Context),
+        format('Error in Input! Try Again. ~w\n', [Err])),
+number(Number),
+Number > 0,
+Number < 3.

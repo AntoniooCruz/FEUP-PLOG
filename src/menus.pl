@@ -14,11 +14,11 @@ startPvpGame,nl.
 
 processMenuChoice(Response):-
 Response =:= 2,
-startPvCGame,nl.
+startCvPGame,nl.
 
 processMenuChoice(Response):-
-Response =:= 2,
-startCvPGame,nl.
+Response =:= 3,
+startPvCGame,nl.
 
 processMenuChoice(Response):-
 Response =:= 4,
@@ -33,19 +33,22 @@ write('exit '),nl, \+fail.
 startPvpGame:-
 boardSize(Size),
 createBoard(Size,[],Board),
-gameCycle(Board,Size,1).
+gameCycle(Board,Size,2).
 
 startCvCGame:-
 boardSize(Size),
 createBoard(Size,[],Board),
-comCycle(Board,Size,1).
+readAILevel(Level),
+comCycle(Board,Size,2,Level).
 
 startPvCGame:-
 boardSize(Size),
 createBoard(Size,[],Board),
-gameVComCycle(Board,Size,2).
+readAILevel(Level),
+gameVComCycle(Board,Size,2,Level).
 
 startCvPGame:-
 boardSize(Size),
 createBoard(Size,[],Board),
-comVgameCycle(Board,Size,2).
+readAILevel(Level),
+comVgameCycle(Board,Size,2,Level).

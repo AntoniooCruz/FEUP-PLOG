@@ -242,3 +242,11 @@ write('White Player turn'),nl.
 writePlayerTurn(Player):-
 Player =:= 2,
 write('Black Player turn'),nl.
+
+writeWinner(Player):-
+Player =:= 1,
+write('Player White Wins!'),nl.
+
+writeWinner(Player):-
+Player =:= 2,
+write('Player Black Wins!'),nl.
