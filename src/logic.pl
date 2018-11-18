@@ -131,7 +131,7 @@ Y1 is Y +1,
 makeBoardAfter([H|T], Y1, DimX, DimY, NewBoard, NewRow1).
 
 
-completePlay(X1,Y1,X2,Y2,Player,[H|T],NewB):-
+move(X1,Y1,X2,Y2,Player,[H|T],NewB):-
 makePlay(X1,Y1,X2,Y2,Player, [H|T], NewB1),
 removePieces2(X2,Y2,NewB1, List, Player),
 sort(List, SortedList),
@@ -334,14 +334,17 @@ getBestPlay(Board,Player,[Xs,Ys,Xf,Yf]).
 
 /*Chooses a Random Play*/
 getRandomPlay(Board,Player,[Xs,Ys,Xf,Yf]):-
-findall([Xs,Ys,Xf,Yf],validMove([Xs,Ys,Xf,Yf],Board,Player),ListOfMoves),
+valid_moves(Board,Player,ListOfMoves),
 list_length(ListOfMoves,Size),
 random(0,Size,Move),
 nth0(Move,ListOfMoves,[Xs,Ys,Xf,Yf]).
 
+valid_moves(Board,Player,ListOfMoves):-
+findall([Xs,Ys,Xf,Yf],validMove([Xs,Ys,Xf,Yf],Board,Player),ListOfMoves).
+
 /*Chooses Best Play*/
 getBestPlay(Board,Player,[Xs,Ys,Xf,Yf]):-
-findall([Xs,Ys,Xf,Yf],validMove([Xs,Ys,Xf,Yf],Board,Player),ListOfMoves),
+valid_moves(Board,Player,ListOfMoves),
 sort(ListOfMoves,NoDupList),
 addValueToList(NoDupList,Board,Player,[[]],ValueListOfMoves),
 list_length(ValueListOfMoves,Size),
@@ -358,7 +361,7 @@ nth0(0,H,Xs),
 nth0(1,H,Ys),
 nth0(2,H,Xf),
 nth0(3,H,Yf),
-completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
+move(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
 value(Board,Player,Before),
 value(NewBoard,Player,After),
 PlayerPieces is Before - After,
