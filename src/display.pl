@@ -132,7 +132,6 @@ put_code(0),
 put_code(0x2551),
 nl.
 
-drawCoordinates(Size):-drawCoordinates(Size,1).
 drawCoordinates(Size,Size):-
 Size > 9,
 put_code(0x2551),

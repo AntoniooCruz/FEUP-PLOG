@@ -329,7 +329,7 @@ addValueToList(T,Board,Player,NewList,ValueListOfMoves).
 % gives it a high value if the enemy is left with 0 pieces to prevent from making a game losing play 
 % enemyPiecesRemoved(+Before,+After,-EnemyPieces)
 
-enemyPiecesRemoved(Before,After,EnemyPieces):-
+enemyPiecesRemoved(_Before,After,EnemyPieces):-
 After =:= 0,
 EnemyPieces is 2000.
 
