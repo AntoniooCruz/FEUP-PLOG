@@ -20,10 +20,11 @@ NextPlayer is (Player mod 2) + 1,
 gameCycle(NewBoard,Size,NextPlayer)    
 ).
 
+
 comCycle(Board,Size,Player):-
 print_tab(Board,Size,0),nl,
 print_info(Board),
-write('Player '),write(Player),write(' turn'),nl,
+writePlayerTurn(Player),
 choose_move(Board,Player,1,[Xs,Ys,Xf,Yf]),
 completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
 writeMove(Xs,Ys,Xf,Yf),
@@ -50,4 +51,26 @@ print_info(Board),
     gameVComCycle(NewBoard,Size,1)
     )
 ).
+
+comVgameCycle(Board,Size,Player):-
+print_tab(Board,Size,0),nl,
+print_info(Board),
+(
+    game_over(Board,Winner) -> print_tab(Board,Size,0),write('Player '), write(Winner) , write(' wins!'); 
+    (
+    Player =:= 2 -> readPlay([Xs,Ys,Xf,Yf],Player,Board),
+    completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
+    gameVComCycle(NewBoard,Size,1);
+
+    write('Computer Move: '),nl,
+    choose_move(Board,Player,1,[Xs,Ys,Xf,Yf]),
+    completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
+    writeMove(Xs,Ys,Xf,Yf),
+    gameVComCycle(NewBoard,Size,2)
+    )
+).
+
+
+
+
 

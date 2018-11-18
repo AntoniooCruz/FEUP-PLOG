@@ -1,29 +1,40 @@
 display_game(Board,Player):-
     print_tab(Board,0).
     
+createBoard(0,0,FinalBoard,FinalBoard).
+
 createBoard(N,Board,FinalBoard):-
-    (
-        N mod 2 =\= 0 -> write('The board must have an even length'),
-        createBoard(0,0,[],[]) ; 
-        createBoardList(N,0,Board,FinalBoard),
-        createBoard(0,0,FinalBoard,FinalBoard)
-    ).
+N mod 2 =\= 0,
+write('The board must have an even length'),
+createBoard(0,0,[],[]).
+
+createBoard(N,Board,FinalBoard):-
+N mod 2 =:= 0,
+createBoardList(N,0,Board,FinalBoard),
 createBoard(0,0,FinalBoard,FinalBoard).
 
 createBoardList(N,Counter,Board,FinalBoard):-
-    N > 0,
-    Size is N + Counter,
-    (
-        N mod 2 =:= 0 -> createWhiteLine(Size,[],F1),
-        append([F1],Board,B1);
-        createBlackLine(Size,[],B2),
-        append(Board,[B2],B1)
-    ),
-    N1 is N - 1,
-    C1 is Counter + 1,
-    createBoardList(N1,C1,B1,FinalBoard).
-    createBoardList(0,Counter,Board,Board).
-    
+N > 0,
+Size is N + Counter,
+N mod 2 =:= 0,
+createWhiteLine(Size,[],F1),
+append([F1],Board,B1),
+N1 is N - 1,
+C1 is Counter + 1,
+createBoardList(N1,C1,B1,FinalBoard).
+createBoardList(0,Counter,Board,Board).
+
+createBoardList(N,Counter,Board,FinalBoard):-
+N > 0,
+Size is N + Counter,
+N mod 2 =\= 0,
+createBlackLine(Size,[],B2),
+append(Board,[B2],B1),
+N1 is N - 1,
+C1 is Counter + 1,
+createBoardList(N1,C1,B1,FinalBoard).
+createBoardList(0,Counter,Board,Board).
+
 
 createWhiteLine(Size,Line,F):-
     Size > 0,
@@ -43,21 +54,19 @@ createBlackLine(0,Line,Line).
 
 
 
-
-
-
-
-
-
 print_tab([],Size).
 print_tab([],Size,X):-
 drawCoordinates(Size),
 drawLastLine(Size).
 
 print_tab([L|T],Size,X):-
-(
-    X =:= 0 -> drawFirstLine(Size); 1 =:= 1
-),
+X =:= 0,
+drawFirstLine(Size),
+Counter is X+1,
+print_line(L,Counter,0),
+print_tab(T,Size,Counter).
+
+print_tab([L|T],Size,X):-
 Counter is X+1,
 print_line(L,Counter,0),
 print_tab(T,Size,Counter).
@@ -225,3 +234,11 @@ Y1 is Yf + 1,
 write('Moved from: '),
 write('['), write(X), write(' | '),write(Y),write(']'), 
 write(' To '), write('['),write(X1), write(' | '),write(Y1),write(']'),nl.
+
+writePlayerTurn(Player):-
+Player =:= 1,
+write('White Player turn'),nl.
+
+writePlayerTurn(Player):-
+Player =:= 2,
+write('Black Player turn'),nl.

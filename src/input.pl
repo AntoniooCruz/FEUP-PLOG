@@ -20,7 +20,7 @@ checksNumber(Temp),
 ).
 
 readPlay([Xs,Ys,Xf,Yf],Player,Board):-
-write('Player '),write(Player),nl,
+writePlayerTurn(Player),
 write('Piece that you want to move: '),nl,
 write('Collumn: '),
 checksNumber(TempX),
