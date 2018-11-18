@@ -2,24 +2,32 @@
 :- use_module(library(random)).
 
 % Aux function for createEmptyBoard
+% createEmptyRow(+X,-Row)
+
 createEmptyRow(0, []).
 createEmptyRow(X,[0 | Row]):-
 X1 is X - 1,
 createEmptyRow(X1,Row).
 
 % Aux function for createEmptyBoard
+% createEmptyColumns(+Y,+Row,-Board)
+
 createEmptyColumns(0, _, []).
 createEmptyColumns(Y, Row, [Row | Board]):-
 Y1 is Y - 1,
 createEmptyColumns(Y1, Row, Board).
 
-% Creates an empty board with dimensions X*Y 
+% Creates an empty board with dimensions X*Y
+% createEmptyBoard(-Board,+X,+Y)
+
 createEmptyBoard(Board, X, Y):-
 createEmptyRow(X,Row),
 createEmptyColumns(Y, Row,Board).
 
 
 % Inserts an element in a list on a given index, returns a list
+% insert(+List, +Element, +Index, -NewList)
+
 insert([], Element , 0, [Element | NewList]):- insert([], Element, -1, NewList).
 insert([],_,_,[]). 
 insert([H|T], Element, 0, [Element | NewList]):- insert([H|T], Element, -3, NewList).
@@ -28,15 +36,21 @@ Index1 is Index -1,
 insert(T, Element, Index1, NewList).
 
 % Creates an example board
+% createBoard(-X)
+
 createBoard(X):-
 append([[1,0,0],[0,1,0]], [[0,0,1]], X).
 
 % Gets the character in Board[Y][X]
+% getPos(+X,+Y,-Element,+Board)
+
 getPos(X,Y,Element,Board):-
 nth0(Y, Board, Row),
 nth0(X, Row, Element).
 
 % Inserts a stone on a cell, from the board OldB, with coordinates (X,Y)
+% insertPiece(+X,+Y,+Player,+OldB,-NewB)
+
 insertPiece(X, Y, Player, OldB, NewB):-
 nth0(Y, OldB, Row, RestRows),
 nth0(X, Row, _Element, RestOfRow),
@@ -44,40 +58,56 @@ insert(RestOfRow, Player, X, NewRow),
 insert(RestRows, NewRow, Y, NewB).
 
 % Checks if a play is valid, the player can only move his/her stones to a place with an opponent's stone
+% validPlay(+X,+Y,+Player,+Board)
+
 validPlay(X,Y,Player,Board):-
 getPos(X,Y,Element,Board),
 Element \= Player, Element \= 0.
 
 % Checks for valid play, removes a players stone from one cell and places it in another cell, removes the opponent's stone
+% makePlay(+X1,+Y1,+X2,+Y2,+Player,+OldB,-NewB)
+
 makePlay(X1,Y1,X2,Y2,Player,OldB,NewB):-
 validPlay(X2,Y2,Player,OldB) -> (insertPiece(X1,Y1,0,OldB,OldB1),
 insertPiece(X2,Y2,Player,OldB1,NewB)); (write('Invalid play!'), fail).
 
 
 % Checks if an element in the list has the coordinates given
+% checkCoordinates(+X,+Y,+List)
+
 checkCoordinates(_,_,[]):-fail.
 checkCoordinates(X,Y,[H|T]):-
 compareCoords(X,Y,H);
 checkCoordinates(X,Y,T).
 
 % Checks if the X coordinates are the unifiable
+% compareCoords(+X,+Y,+List)
+
 compareCoords(X,Y,[H|T]):-
 Y == H,
 compareCoords2(X,T).
 
 % Checks if the Y coordinates are the unifiable
+% compareCoords2(+X,+List)
+
 compareCoords2(X,[H|_T]):- X == H.
 
 % Returns the colour of the piece in the head of the given list
+% checkColour(-Colour, +List)
+
 checkColour(Colour,[_H | [_H1|[T1| _E]]]):-
 T1 == Colour.
 
 
 % Extracts the stone symbol of the first element of a list of lists of type [CoordX,CoordY,Stone]
+% extractFirstStone(+List, -Stone)
+
 extractFirstStone([[_E1|[_E2|S]]|_T], Stone):-
 Stone is S.
 
 % Extracts the stone symbol of an element of the given list with coordinates (X,Y), if no element is found with the given coordinates returns 0(empty cell)
+% extractStone(+X,+Y,+List,-Stone)
+
 extractStone(X,Y,[[Y|[X|S]]| _T],Stone):-
 Stone is S.
 
@@ -89,11 +119,15 @@ extractStone(X,Y,T,Stone).
 
 
 % Creates a row of the board with the stones present after a play was made
+% makesRowAfterFirst(+List, +X,+DimX,+Y,-NewRow)
+
 makeRowAfterFirst([H|T], X, DimX, Y, NewRow):-
 extractStone(X, Y, [H|T], S1),
 makeRowAfter([H|T], X, DimX, Y, NewRow, S1).
 
 % Auxiliary function to makeRowAfterFirst
+% makesRowAfter(+List, +X,+DimX,+Y,-NewRow, +S)
+
 makeRowAfter([_H|_T], DimX, DimX, _Y, [], _S).
 makeRowAfter([H|T], X, DimX, Y, [S | NewRow], S):-
 X1 is X + 1,
@@ -102,6 +136,8 @@ makeRowAfter([H|T], X1, DimX, Y, NewRow, S1).
 
 
 % Creates a board with the stones present afte a play was made
+%makeBoardAfterFirst(+List,+Y,+DimX,+DimY,-NewBoard)
+
 makeBoardAfterFirst([H|T], Y, DimX, DimY, NewBoard):-
 X is 0,
 makeRowAfterFirst([H|T], X, DimX, Y, NewRow1),
@@ -109,6 +145,8 @@ Y1 is Y +1,
 makeBoardAfter([H|T], Y1, DimX, DimY, NewBoard, NewRow1).
 
 % Auxiliary function to makeBoardAfterFirst
+%makeBoardAfter(+List,+Y,+DimX,+DimY,-NewBoard,+NewRow)
+
 makeBoardAfter([_H|_T], DimY, _, DimY, [NewRow| []], NewRow).
 makeBoardAfter([H|T], Y, DimX, DimY, [NewRow | NewBoard], NewRow):-
 X is 0,
@@ -118,6 +156,8 @@ makeBoardAfter([H|T], Y1, DimX, DimY, NewBoard, NewRow1).
 
 % Makes a play, that is, checks if the play is valid, moves the player's stone, removes the opponent's stone, checks which stones are connected
 % to the moved stone and creates a new board with the correct stone(the moved stone and the ones which are connected to it) 
+% move(+X1,+Y1,+X2,+Y2,+Player,+Board,-NewB)
+
 move(X1,Y1,X2,Y2,Player,[H|T],NewB):-
 makePlay(X1,Y1,X2,Y2,Player, [H|T], NewB1),
 removePieces2(X2,Y2,NewB1, List, Player),
@@ -126,7 +166,9 @@ list_length([H|T], LengthY),
 list_length(H, LengthX),
 makeBoardAfterFirst(SortedList,0,LengthX,LengthY,NewB).
 
-% Checks if the cell above has a stone 
+% Checks if the cell above has a stone
+% checkUp(+X,+Y,+OldB,-NewB,+Acc)
+
 checkUp(X,Y,OldB, NewB,Acc):-
 Y1 is Y - 1, 
 nth0(Y1, OldB, Row),
@@ -134,6 +176,8 @@ nth0(X, Row, Element),
 ((Element == 1 ; Element == 2), \+checkCoordinates(X,Y1,Acc)) -> removePieces(X,Y1,Element,OldB,NewB,Acc); removePieces(X,Y,Element,[],NewB,Acc).
 
 % Checks if the cell below has a stone
+% checkDown(+X,+Y,+OldB,-NewB,+Acc)
+
 checkDown(X,Y,OldB, NewB,Acc):-
 Y1 is Y + 1, 
 nth0(Y1, OldB, Row),
@@ -142,6 +186,8 @@ nth0(X, Row, Element),
 
 
 % Checks if the cell to the left has a stone
+% checkLeft(+X,+Y,+OldB,-NewB,+Acc)
+
 checkLeft(X,Y,OldB,NewB,Acc):-
 X1 is X - 1, 
 nth0(Y, OldB, Row),
@@ -150,13 +196,17 @@ nth0(X1, Row, Element),
 
 
 % Checks if the cell to the right has a stone
+% checkRight(+X,+Y,+OldB,-NewB,+Acc)
+
 checkRight(X,Y,OldB,NewB,Acc):-
 X1 is X + 1, 
 nth0(Y, OldB, Row),
 nth0(X1, Row, Element),
 ((Element == 1 ; Element == 2), \+checkCoordinates(X1,Y,Acc))-> removePieces(X1,Y, Element, OldB, NewB,Acc); removePieces(X,Y,Element,[],NewB,Acc).
 
-% Checks if the cell above has a stone 
+% Checks if the cell above has a stone
+% checkUp2(+X,+Y,+OldB,-NewB)
+
 checkUp2(X,Y,OldB, NewB):-
 Y1 is Y - 1, 
 nth0(Y1, OldB, Row),
@@ -164,6 +214,8 @@ nth0(X, Row, Element),
 ((Element == 1 ; Element == 2), \+checkCoordinates(X,Y1,[])) -> removePieces(X,Y1,Element,OldB,NewB,[]); removePieces(X,Y,Element,[],NewB,[]).
 
 % Checks if the cell below has a stone
+% checkDown2(+X,+Y,+OldB,-NewB,+Acc)
+
 checkDown2(X,Y,OldB, NewB,Acc):-
 Y1 is Y + 1, 
 nth0(Y1, OldB, Row),
@@ -172,6 +224,8 @@ nth0(X, Row, Element),
 
 
 % Checks if the cell to the left has a stone
+% checkLeft2(+X,+Y,+OldB,-NewB,+Acc)
+
 checkLeft2(X,Y,OldB,NewB,Acc):-
 X1 is X - 1, 
 nth0(Y, OldB, Row),
@@ -180,6 +234,8 @@ nth0(X1, Row, Element),
 
 
 % Checks if the cell to the right has a stone
+% checkRight2(+X,+Y,+OldB,-NewB,+Acc)
+
 checkRight2(X,Y,OldB,NewB,Acc):-
 X1 is X + 1, 
 nth0(Y, OldB, Row),
@@ -188,6 +244,8 @@ nth0(X1, Row, Element),
 
 
 % Auiliary function to removePieces2
+%r removePieces(+X,+Y,+Element,+OldB,-NewB,+Acc)
+
 removePieces(_,_,_,[],[],_).
 
 removePieces(0,0,Element,OldB, [[0,0,Element] | NewB],Acc):-
@@ -238,6 +296,8 @@ append(NewA2, New4, NewB1),
 sort(NewB1,NewB).
 
 % Creates a list with the stones which will not be removed after a play was made
+% removePieces2(+X,+Y,+OldB,-NewB,+Player)
+
 removePieces2(X, Y, OldB, NewB, Player):-
 (Y \= 0 -> checkUp2(X,Y,OldB,New1); 1=1),
 append(New1,[],New1a),
