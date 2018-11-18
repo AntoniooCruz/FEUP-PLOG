@@ -72,7 +72,7 @@ drawFirstLine(N,C1).
 % Draws the the division between each line
 % lineDivider(+Size,+Counter,+LineN)
 
-lineDivider(N,0,LineN):-
+lineDivider(_N,0,_LineN):-
 put_code(0x256c),
 put_code(0x2550),
 put_code(0x2550),
@@ -192,7 +192,7 @@ put_code(0).
 
 createBoard(0,0,FinalBoard,FinalBoard).
 
-createBoard(N,Board,FinalBoard):-
+createBoard(N,_Board,_FinalBoard):-
 N mod 2 =\= 0,
 write('The board must have an even length'),
 createBoard(0,0,[],[]).
@@ -214,7 +214,7 @@ append([F1],Board,B1),
 N1 is N - 1,
 C1 is Counter + 1,
 createBoardList(N1,C1,B1,FinalBoard).
-createBoardList(0,Counter,Board,Board).
+createBoardList(0,_Counter,Board,Board).
 
 createBoardList(N,Counter,Board,FinalBoard):-
 N > 0,
@@ -225,7 +225,7 @@ append(Board,[B2],B1),
 N1 is N - 1,
 C1 is Counter + 1,
 createBoardList(N1,C1,B1,FinalBoard).
-createBoardList(0,Counter,Board,Board).
+createBoardList(0,_Counter,Board,Board).
 
 % Creates a line filled with the representation of white pieces
 % createWhiteLine(+Size,+Line,-FinalLine)
