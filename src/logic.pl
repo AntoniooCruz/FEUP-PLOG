@@ -131,7 +131,7 @@ Y1 is Y +1,
 makeBoardAfter([H|T], Y1, DimX, DimY, NewBoard, NewRow1).
 
 
-completePlay(X1,Y1,X2,Y2,Player,[H|T],NewB):-
+move(X1,Y1,X2,Y2,Player,[H|T],NewB):-
 makePlay(X1,Y1,X2,Y2,Player, [H|T], NewB1),
 removePieces2(X2,Y2,NewB1, List, Player),
 sort(List, SortedList),
@@ -315,7 +315,14 @@ append(NewK1, [[Y,X,Player]], NewB),
 append(NewK, [], NewK1).
 /*sort can be used to eliminate duplicate elements and to sort the list*/
 
+% Gets a List with all the valid moves for a certain player in a certain board
+% valid_moves(+Board,+Player,-ListOfMoves)
 
+valid_moves(Board,Player,ListOfMoves):-
+findall([Xs,Ys,Xf,Yf],validMove([Xs,Ys,Xf,Yf],Board,Player),ListOfMoves).
+
+% Is true when a certain move is valid for a player on a certain Board
+% validMove(+[Xs,Ys,Xf,Yf],+Board,+Player)
 
 validMove([Xs,Ys,Xf,Yf],Board,Player):-
 getPos(Xs,Ys,ElementStart,Board),
@@ -323,7 +330,10 @@ getPos(Xf,Yf,ElementEnd,Board),
 ElementStart =:= Player,
 ElementEnd =\= Player,
 ElementEnd =\= 0.
-/*Chooses Computer Play*/
+
+% Chooses a move to be made by the AI based on the level of difficulty 
+% choose_move(+Board,+Player,+Level,-[Xs,Ys,Xf,Yf])
+
 choose_move(Board,Player,Level,[Xs,Ys,Xf,Yf]):-
 Level =:= 1,
 getRandomPlay(Board,Player,[Xs,Ys,Xf,Yf]).
@@ -332,21 +342,28 @@ choose_move(Board,Player,Level,[Xs,Ys,Xf,Yf]):-
 Level =:= 2,
 getBestPlay(Board,Player,[Xs,Ys,Xf,Yf]).
 
-/*Chooses a Random Play*/
+% Chooses a random valid play 
+% getRandomPlay(+Board,+Player,-[Xs,Ys,Xf,Yf])
+
 getRandomPlay(Board,Player,[Xs,Ys,Xf,Yf]):-
-findall([Xs,Ys,Xf,Yf],validMove([Xs,Ys,Xf,Yf],Board,Player),ListOfMoves),
+valid_moves(Board,Player,ListOfMoves),
 list_length(ListOfMoves,Size),
 random(0,Size,Move),
 nth0(Move,ListOfMoves,[Xs,Ys,Xf,Yf]).
 
-/*Chooses Best Play*/
+% Chooses based on a greedy algorithm the best possible play
+% getBestPlay(+Board,+Player,-[Xs,Ys,Xf,Yf])
+
 getBestPlay(Board,Player,[Xs,Ys,Xf,Yf]):-
-findall([Xs,Ys,Xf,Yf],validMove([Xs,Ys,Xf,Yf],Board,Player),ListOfMoves),
+valid_moves(Board,Player,ListOfMoves),
 sort(ListOfMoves,NoDupList),
 addValueToList(NoDupList,Board,Player,[[]],ValueListOfMoves),
 list_length(ValueListOfMoves,Size),
 Move is Size - 1,
 nth0(Move,ValueListOfMoves,[_Val,Xs,Ys,Xf,Yf]).
+
+% Appends to the list of moves the value of a play
+% addValueToList(+ListOfMove,+Board,+Player,+Acc,-ValueListOfMoves)
 
 addValueToList(1,_Board,_Player,Acc,Acc).
 addValueToList([],Board,Player,Acc,ValueListOfMoves):-
@@ -358,21 +375,34 @@ nth0(0,H,Xs),
 nth0(1,H,Ys),
 nth0(2,H,Xf),
 nth0(3,H,Yf),
-completePlay(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
+move(Xs,Ys,Xf,Yf,Player,Board,NewBoard),
 value(Board,Player,Before),
 value(NewBoard,Player,After),
 PlayerPieces is Before - After,
 EnemyPlayer is (Player mod 2) + 1,
 value(Board,EnemyPlayer,EnemyBefore),
 value(NewBoard,EnemyPlayer,EnemyAfter),
-EnemyPieces is EnemyBefore - EnemyAfter,
+enemyPiecesRemoved(EnemyBefore,EnemyAfter,EnemyPieces),
 Value is PlayerPieces - EnemyPieces,
 append([Value],H,NewMove),
 append([NewMove],Acc,NewList),
 addValueToList(T,Board,Player,NewList,ValueListOfMoves).
 
+% Calculates the amout of pieces removed from the enemy,
+% gives it a high value if the enemy is left with 0 pieces to prevent from making a game losing play 
+% enemyPiecesRemoved(+Before,+After,-EnemyPieces)
 
-/*Calculates the length of a list*/
+enemyPiecesRemoved(Before,After,EnemyPieces):-
+After =:= 0,
+EnemyPieces is 2000.
+
+enemyPiecesRemoved(Before,After,EnemyPieces):-
+After > 0,
+EnemyPieces is Before - After.
+
+% Calculates the length of a list
+% list_length(+List,-Length)
+
 list_length(Xs,L) :- list_length(Xs,0,L) .
 
 list_length( [], L , L ) .
@@ -380,13 +410,17 @@ list_length( [_|Xs] , T , L ) :-
   T1 is T+1 ,
   list_length(Xs,T1,L).
 
-/*Checks if the game is over*/
+% True if the game is over 
+% game_over(+Board,-Winner)
 
 game_over(Board, 1) :-
 	countsPieces(Board, 1, 0, 0).
 
 game_over(Board, 2) :-
 	countsPieces(Board, 2, 0, 0).
+
+% Counts the amount of pieces of a colour in a certain board 
+% countsPieces(+Board,+Piece,-Amount,+Acc)
 
 countsPieces([],_Piece,Count,Count).
 
@@ -395,6 +429,9 @@ count_el(H,Counter,Piece,0),
 Acc2 is Counter + Acc,
 !,
 countsPieces(T,Piece,Amount,Acc2).
+
+% Counts the amount of times a certain element is in a list 
+% count_el(+List,-Amount,+Piece,+Acc)
 
 count_el([], Count,_Element, Count).
 
@@ -406,7 +443,8 @@ count_el([H | T], Count,Element, Acc) :-
 count_el([_H | T], Count,Element,Acc) :-
     count_el(T, Count,Element,Acc).
 
-/*Avalia*/
+% Gets the value of a board for a certain player 
+% value(+Board,+Player,-Value)
 value(Board,Player,Value):-
 countsPieces(Board,Player,Value,0).
 
