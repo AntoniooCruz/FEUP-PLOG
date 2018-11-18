@@ -382,12 +382,23 @@ PlayerPieces is Before - After,
 EnemyPlayer is (Player mod 2) + 1,
 value(Board,EnemyPlayer,EnemyBefore),
 value(NewBoard,EnemyPlayer,EnemyAfter),
-EnemyPieces is EnemyBefore - EnemyAfter,
+enemyPiecesRemoved(EnemyBefore,EnemyAfter,EnemyPieces),
 Value is PlayerPieces - EnemyPieces,
 append([Value],H,NewMove),
 append([NewMove],Acc,NewList),
 addValueToList(T,Board,Player,NewList,ValueListOfMoves).
 
+% Calculates the amout of pieces removed from the enemy,
+% gives it a high value if the enemy is left with 0 pieces to prevent from making a game lossing play 
+% enemyPiecesRemoved(+Before,+After,-EnemyPieces)
+
+enemyPiecesRemoved(Before,After,EnemyPieces):-
+After =:= 0,
+EnemyPieces is 2000.
+
+enemyPiecesRemoved(Before,After,EnemyPieces):-
+After > 0,
+EnemyPieces is Before - After.
 
 % Calculates the length of a list
 % list_length(+List,-Length)
@@ -434,7 +445,6 @@ count_el([_H | T], Count,Element,Acc) :-
 
 % Gets the value of a board for a certain player 
 % value(+Board,+Player,-Value)
-
 value(Board,Player,Value):-
 countsPieces(Board,Player,Value,0).
 
