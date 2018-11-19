@@ -206,7 +206,7 @@ nth0(X1, Row, Element),
 
 % Checks if the cell above has a stone
 % checkUp2(+X,+Y,+OldB,-NewB)
-
+checkUp2(_,0,_,_).
 checkUp2(X,Y,OldB, NewB):-
 Y1 is Y - 1, 
 nth0(Y1, OldB, Row),
@@ -225,7 +225,7 @@ nth0(X, Row, Element),
 
 % Checks if the cell to the left has a stone
 % checkLeft2(+X,+Y,+OldB,-NewB,+Acc)
-
+checkLeft2(0,_,_,_).
 checkLeft2(X,Y,OldB,NewB,Acc):-
 X1 is X - 1, 
 nth0(Y, OldB, Row),
@@ -299,13 +299,13 @@ sort(NewB1,NewB).
 % removePieces2(+X,+Y,+OldB,-NewB,+Player)
 
 removePieces2(X, Y, OldB, NewB, Player):-
-(Y \= 0 -> checkUp2(X,Y,OldB,New1); true),
+checkUp2(X,Y,OldB,New1),
 append(New1,[],New1a),
-(Y \= 6 -> checkDown2(X,Y,OldB,New2,New1a); true),
+checkDown2(X,Y,OldB,New2,New1a),
 append(New2,[],New2a),
-(X \= 0 -> checkLeft2(X,Y,OldB,New3,New2a); true),
+checkLeft2(X,Y,OldB,New3,New2a),
 append(New3,[],New3a),
-(X \= 6 -> checkRight2(X,Y,OldB,New4,New3a); true),
+checkRight2(X,Y,OldB,New4,New3a),
 append(New1,New2,NewA1),
 append(NewA1,New3,NewA2),
 append(NewA2, New4, NewK),
