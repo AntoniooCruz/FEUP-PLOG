@@ -299,13 +299,13 @@ sort(NewB1,NewB).
 % removePieces2(+X,+Y,+OldB,-NewB,+Player)
 
 removePieces2(X, Y, OldB, NewB, Player):-
-(Y \= 0 -> checkUp2(X,Y,OldB,New1); 1=1),
+(Y \= 0 -> checkUp2(X,Y,OldB,New1); true),
 append(New1,[],New1a),
-(Y \= 6 -> checkDown2(X,Y,OldB,New2,New1a); 1=1),
+(Y \= 6 -> checkDown2(X,Y,OldB,New2,New1a); true),
 append(New2,[],New2a),
-(X \= 0 -> checkLeft2(X,Y,OldB,New3,New2a); 1=1),
+(X \= 0 -> checkLeft2(X,Y,OldB,New3,New2a); true),
 append(New3,[],New3a),
-(X \= 6 -> checkRight2(X,Y,OldB,New4,New3a); 1=1),
+(X \= 6 -> checkRight2(X,Y,OldB,New4,New3a); true),
 append(New1,New2,NewA1),
 append(NewA1,New3,NewA2),
 append(NewA2, New4, NewK),
