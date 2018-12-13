@@ -5,7 +5,7 @@
 
 % Starts the game by displaying the main menu 
 
-forms:-
+play:-
 menuDisplay,
 checksNumber(Opt),
 processMenuChoice(Opt).
