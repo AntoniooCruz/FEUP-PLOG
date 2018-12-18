@@ -4,14 +4,16 @@
 %(?) - Needs rework for list format
 :-use_module(library(clpfd)).
 
-%
+%Calls setColumnSandwich with the right arguments
 setColumnsSandwich(Board, Dim):-
 Stop is Dim -1,
 StopF is Stop * Dim,
 BeginPos is Dim +1,
 setColumnSandwich(Board, BeginPos, StopF, Dim).
+%------------------------------------------------
 
-%
+%Sets the Sandwich restriction (vertical orientation) for all board cells
+%Position start = 1, StopF = position of the last cell where the restriction will be applied
 setColumnSandwich(Board, StopF, StopF, Dim):-
 AntePos is Pos - Dim,
 PostPos is Pos + Dim,
@@ -29,9 +31,10 @@ element(Pos, Board, Elem),
 Elem #= Before #\/ Elem #= After,
 NextPos is Pos + 1,
 setColumnSandwich(Board, NextPos, StopF, Dim).
+%---------------------------------------------------------------------------------------------
 
 
-%Sets the "Sandwich"(horizontal orientation) restriction for E1,E2,E3(!)
+%Sets the "Sandwich"(horizontal orientation) restriction for all board cells(!)
 %/ Position start = 1 / K = Rest of the division between Cell position and board dimension
 setLineSandwich([E1,E2,E3|[]], _, _):-
 E2 #= E1 #\/ E2 #= E3.
@@ -52,12 +55,11 @@ E2 #= E1 #\/ E2 #= E3,
 K1 is K + 1,
 Kf is K1 mod Dim,
 setLineSandwich([E2,E3|T], Kf, Dim).
-%--------------------------------------------
+%-----------------------------------------------------------------------------------------
 
 %Sets the "Sandwich"(horizontal orientation) restriction for all elements(!)
 setLinesSandwich(Board, Dim):-
 setLineSandwich(Board, 1, Dim).
-
 %------------------------------------------------------------------------
 
 %Sets the restriction that each line must have a length of Dim(not used)
@@ -67,10 +69,26 @@ length(H,Dim),
 setBoardLinesLength(T,Dim).
 %-------------------------------------------------------------
 
+%Sets the Sum of pieces per line to be equal(WIP!!!)
+setSumPiecesLines([1|T], ActualSum, ExpectedSum, Dim, Dim):-
+NewSum #= ActualSum + 1,
+NewSum #= ExpectedSum,
+setSumPiecesLines(T, 0, ExpectedSum, 0, Dim).
+
+
+setSumPiecesLines([1|T], ActualSum, ExpectedSum, Pos, Dim):-
+NewSum #= ActualSum + 1,
+NewPos is Pos +1,
+setSumPiecesLines(T, NewSum, ExpectedSum, NewPos, Dim).
+
+setSumPiecesLines([H|T], ActualSum, ExpectedSum, Pos, Dim):-
+NewPos is Pos +1,
+setSumPiecesLines(T, ActualSum, ExpectedSum, NewPos, Dim).
+%--------------------------------------------
 
 %"Returns" in Sum the value of the sum of pieces in a line(?)
-getSumPiecesLine([_],_,0).
-getSumPiecesLine([Piece|T], Piece, Sum):-
+getSumPiecesLine([_],_,0, 0).
+getSumPiecesLine([Piece|T], Piece, Sum, K):-
 getSumPiecesLine(T, Piece, Sum1),
 Sum #= 1 + Sum1.
 
@@ -137,7 +155,8 @@ lists2List(InitialBoard,[],InitialList),
 length(InitialBoard, BoardDim),
 length(InitialList,NumCells),
 length(SolvedBoard, NumCells),
-domain(SolvedBoard,1,2),
+%domain(SolvedBoard,1,2), %Used in Sicstus
+SolvedBoard ins 1..2, % Used in SWI-Prolog
 setPiecesValues(SolvedBoard, Dim),
 labeling([],SolvedBoard).
 %--------------------------------------------------------------------------------
