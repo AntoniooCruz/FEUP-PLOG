@@ -69,7 +69,7 @@ length(H,Dim),
 setBoardLinesLength(T,Dim).
 %-------------------------------------------------------------
 
-%Sets the Sum of white pieces per line to be equal to be ExpectedSum(3*Dim/2) (!)
+%Sets the Sum of white pieces per line to be equal to be ExpectedSum(3*Dim/2)(Needs update) (!)
 
 
 setSumPiecesLines([1|T], ActualSum, ExpectedSum, Dim, Dim):-
