@@ -1,4 +1,5 @@
 :-ensure_loaded(display).
+:-ensure_loaded(puzzleGenerator).
 
 start:-
 boardSize(Size),

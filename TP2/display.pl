@@ -186,67 +186,6 @@ put_code(0),
 write(LineN),
 put_code(0).
 
-% Creates a Board dynamically given a certain Size
-% createBoard(+Size,+InitialEmptyBoard,-FinalBoard)
-
-createBoard(0,0,FinalBoard,FinalBoard).
-
-createBoard(N,_Board,_FinalBoard):-
-N mod 2 =\= 0,
-write('The board must have an even length'),
-createBoard(0,0,[],[]).
-
-createBoard(N,Board,FinalBoard):-
-N mod 2 =:= 0,
-createBoardList(N,0,Board,FinalBoard),
-createBoard(0,0,FinalBoard,FinalBoard).
-
-% Auxiliar function to the createBoard
-% createBoardList(+Size,+Counter,+Board,-FinalBoard)
-
-createBoardList(N,Counter,Board,FinalBoard):-
-N > 0,
-Size is N + Counter,
-N mod 2 =:= 0,
-createWhiteLine(Size,[],F1),
-append([F1],Board,B1),
-N1 is N - 1,
-C1 is Counter + 1,
-createBoardList(N1,C1,B1,FinalBoard).
-createBoardList(0,_Counter,Board,Board).
-
-createBoardList(N,Counter,Board,FinalBoard):-
-N > 0,
-Size is N + Counter,
-N mod 2 =\= 0,
-createBlackLine(Size,[],B2),
-append(Board,[B2],B1),
-N1 is N - 1,
-C1 is Counter + 1,
-createBoardList(N1,C1,B1,FinalBoard).
-createBoardList(0,_Counter,Board,Board).
-
-% Creates a line filled with the representation of white pieces
-% createWhiteLine(+Size,+Line,-FinalLine)
-
-createWhiteLine(Size,Line,F):-
-    Size > 0,
-    append([1],Line,L1),
-    S1 is Size-1,
-    createWhiteLine(S1,L1,F).
-
-createWhiteLine(0,Line,Line).
-
-% Creates a line filled with the representation of black pieces
-% createBlackLine(+Size,+Line,-FinalLine)
-
-createBlackLine(Size,Line,F):-
-    Size > 0,
-    append([2],Line,L1),
-    S1 is Size-1,
-    createBlackLine(S1,L1,F).
-
-createBlackLine(0,Line,Line).
 
 % Asks the user for the size of the Board he wants to play 
 % boardSize(-Size)
