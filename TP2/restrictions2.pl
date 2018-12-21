@@ -69,77 +69,52 @@ length(H,Dim),
 setBoardLinesLength(T,Dim).
 %-------------------------------------------------------------
 
-%Sets the Sum of white pieces per line to be equal to be ExpectedSum(3*Dim/2)(Needs update) (!)
+%Sets the Sum of white pieces per line to be equal to be ExpectedSum(3*Dim/2)(Tests - Success) (!)
 
+setSumPiecesLines([H|[]], ActualSum, ExpectedSum, Dim, Dim):-
+Sum #= ActualSum + H,
+Sum #= ExpectedSum.
 
-setSumPiecesLines([1|T], ActualSum, ExpectedSum, Dim, Dim):-
-NewSum #= ActualSum + 1,
-NewSum #= ExpectedSum,
-setSumPiecesLines(T, 0, ExpectedSum, 0, Dim).
-
-
-setSumPiecesLines([1|T], ActualSum, ExpectedSum, Pos, Dim):-
-NewSum #= ActualSum + 1,
-NewPos is Pos +1,
-setSumPiecesLines(T, NewSum, ExpectedSum, NewPos, Dim).
 
 setSumPiecesLines([H|T], ActualSum, ExpectedSum, Dim, Dim):-
-ActualSum #= ExpectedSum,
-setSumPiecesLines(T, 0, ExpectedSum, 0, Dim).
+Sum #= ActualSum + H,
+Sum #= ExpectedSum,
+setSumPiecesLines(T, 0, ExpectedSum, 1, Dim).
 
 setSumPiecesLines([H|T], ActualSum, ExpectedSum, Pos, Dim):-
 NewPos is Pos +1,
-setSumPiecesLines(T, ActualSum, ExpectedSum, NewPos, Dim).
+Sum #= ActualSum + H,
+setSumPiecesLines(T, Sum, ExpectedSum, NewPos, Dim).
 %-------------------------------------------------------------------------
 
 %Set the sum of white pieces of each column to be Expected Sum
-setSumPiecesColumn(Board, 1, _, ColumnNum, ColumnNum, _, 1).
-setSumPiecesColumn(Board, 0, _, ColumnNum, ColumnNum, _, _).
+setSumPiecesColumn(_,_,_,ColumnNum,_,ColumnNum).
 
+setSumPiecesColumn(_, ActualSum, ExpectedSum, ColumnNum, ColumnNum, _):-
+ActualSum #= ExpectedSum.
 
-setSumPiecesColumn(Board, ActualSum, ExpectedSum, ColumnNum, ColumnPos, LinePos, 1):-
-NextPos is LinePos + (ColumnPos * ColumnNum),
-NextColumnPos is ColumnPos + 1,
-nth0(Board, NextPos, NextPiece),
-setSumPiecesColumn(Board, NextSum, ExpectedSum, ColumnNum, NextColumnPos, LinePos, NextPiece),
-ActualSum #= NextSum + 1.
-
-
-setSumPiecesColumn(Board, ActualSum, ExpectedSum, ColumnNum, ColumnPos, LinePos, Piece):-
-NextPos is LinePos + (ColumnPos * ColumnNum),
-NextColumnPos is ColumnPos + 1,
-nth0(Board, NextPos, NextPiece),
-setSumPiecesColumn(Board, NextSum, ExpectedSum, ColumnNum, NextColumnPos, LinePos, NextPiece),
-ActualSum #= NextSum.
-
-
-setSumPiecesColumn(Board, ActualSum, ExpectedSum, ColumnNum, 0, LinePos, 1):-
-NextPos is LinePos + (ColumnPos * ColumnNum),
-NextColumnPos is ColumnPos + 1,
+setSumPiecesColumn(Board, ActualSum, ExpectedSum, ColumnNum, 0, LinePos):-
+NextPos is LinePos,
+nth0(NextPos, Board, Piece),
+NextSum #= ActualSum + Piece,
+NextColumnPos is 1,
 NextLinePos is LinePos + 1,
-nth0(Board, NextPos, NextPiece),
-setSumPiecesColumn(Board, NextSum, ExpectedSum, ColumnNum, NextColumnPos, LinePos, NextPiece),
-ActualSum #= NextSum + 1,
-ActualSum #= ExpectedSum,
-setSumPiecesColumn(Board, NextSum, ExpectedSum, ColumnNum, 0, NextLinePos, NextPiece).
+setSumPiecesColumn(Board, NextSum, ExpectedSum, ColumnNum, NextColumnPos, LinePos),
+setSumPiecesColumn(Board, 0, ExpectedSum, ColumnNum, 0, NextLinePos).
 
 
-setSumPiecesColumn(Board, ActualSum, ExpectedSum, ColumnNum, 0, LinePos, Piece):-
+setSumPiecesColumn(Board, ActualSum, ExpectedSum, ColumnNum, ColumnPos, LinePos):-
 NextPos is LinePos + (ColumnPos * ColumnNum),
+nth0(NextPos, Board, Piece),
+NextSum #= ActualSum + Piece,
 NextColumnPos is ColumnPos + 1,
-NextLinePos is LinePos + 1,
-nth0(Board, NextPos, NextPiece),
-setSumPiecesColumn(Board, NextSum, ExpectedSum, ColumnNum, NextColumnPos, LinePos, NextPiece),
-ActualSum #= NextSum,
-ActualSum #= ExpectedSum,
-setSumPiecesColumn(Board, NextSum, ExpectedSum, ColumnNum, 0, NextLinePos, NextPiece).
+setSumPiecesColumn(Board, NextSum, ExpectedSum, ColumnNum, NextColumnPos, LinePos).
 %----------------------------------------------------------------
 
 %Sets the sum of white pieces for all columns to be Dim/2
 setSumPiecesColumns(Board, Dim):-
-ExpectedSum is Dim/2,
-nth0(0, Board, Piece),
-setSumPiecesColumn(Board, ActualSum, ExpectedSum, Dim, 0, 0, Piece).
+ExpectedSum is 3 * Dim / 2,
+setSumPiecesColumn(Board, 0, ExpectedSum, Dim, 0, 0).
 %------------------------------------------------
 
 %"Returns" in Sum the value of the sum of pieces in a line(Not used)
@@ -205,6 +180,30 @@ append(Acc, H, Next),
 lists2List(T,Next,FinalList).
 %----------------------------------
 
+
+equal(LL,LL).
+
+%Converts a List to a List of lists
+list2LL(List, LL, Dim):-
+l2ll(List, LL,[], Dim, [], 0).
+
+
+l2ll([], LL, Aux, Dim, TempList, _):-
+append(Aux, [TempList], NewAux),
+equal(LL, NewAux).
+
+
+l2ll([H|T], LL, Aux, Dim, TempList, Dim):-
+append(Aux, [TempList], NewAux),
+l2ll([H|T], LL, NewAux, Dim, [], 0).
+
+l2ll([H|T], LL, Aux, Dim, TempList, Pos):-
+append(TempList,[H], NewList),
+NewPos is Pos + 1,
+l2ll(T, LL , Aux, Dim, NewList, NewPos).
+
+
+
 %Main function sets all the restrictions needed for the board, solves the puzzle
 set_board_restrictions(InitialBoard, SolvedBoard):-
 lists2List(InitialBoard,[],InitialList),
@@ -214,11 +213,14 @@ length(SolvedBoard, NumCells),
 %domain(SolvedBoard,1,2), %Used in Sicstus
 SolvedBoard ins 1..2, % Used in SWI-Prolog
 transferPieceCoord(InitialList,SolvedBoard),
-setSumPiecesLines(SolvedBoard, Sum, 2, 0, 4),
+ExpectedSum is 3 * BoardDim / 2,
+%setSumPiecesLines(SolvedBoard, 0, ExpectedSum, 1, BoardDim),
 %setColumnsSandwich(SolvedBoard, BoardDim),
-%setSumPiecesLines(SolvedBoard, 0, 3, 0, BoardDim),
+setSumPiecesColumns(SolvedBoard, BoardDim),
 %setPiecesValues(SolvedBoard, BoardDim),
-labeling([],SolvedBoard).
+labeling([],SolvedBoard),
+list2LL(SolvedBoard, Solution, BoardDim),
+write(Solution).
 %--------------------------------------------------------------------------------
 
 test(I,F):-
