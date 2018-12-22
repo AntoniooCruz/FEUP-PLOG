@@ -207,22 +207,21 @@ l2ll(T, LL , Aux, Dim, NewList, NewPos).
 
 
 %Main function sets all the restrictions needed for the board, solves the puzzle
-set_board_restrictions(InitialBoard, SolvedBoard):-
+set_board_restrictions(InitialBoard, SolvedBoardList,Solution):-
 lists2List(InitialBoard,[],InitialList),
 length(InitialBoard, BoardDim),
 length(InitialList,NumCells),
-length(SolvedBoard, NumCells),
-domain(SolvedBoard,1,2), %Used in Sicstus
-%SolvedBoard ins 1..2, % Used in SWI-Prolog
-transferPieceCoord(InitialList,SolvedBoard),
+length(SolvedBoardList, NumCells),
+domain(SolvedBoardList,1,2), %Used in Sicstus
+%SolvedBoardList ins 1..2, % Used in SWI-Prolog
+transferPieceCoord(InitialList,SolvedBoardList),
 ExpectedSum is 3 * BoardDim // 2,
-setLinesSandwich(SolvedBoard, BoardDim),
-setColumnsSandwich(SolvedBoard, BoardDim),
-setSumPiecesLines(SolvedBoard, 0, ExpectedSum, 1, BoardDim),
-setSumPiecesColumns(SolvedBoard, BoardDim),
-labeling([],SolvedBoard),
-list2LL(SolvedBoard, Solution, BoardDim),
-write(Solution).
+setLinesSandwich(SolvedBoardList, BoardDim),
+setColumnsSandwich(SolvedBoardList, BoardDim),
+setSumPiecesLines(SolvedBoardList, 0, ExpectedSum, 1, BoardDim),
+setSumPiecesColumns(SolvedBoardList, BoardDim),
+labeling([],SolvedBoardList),
+list2LL(SolvedBoardList, Solution, BoardDim).
 %--------------------------------------------------------------------------------
 
 
