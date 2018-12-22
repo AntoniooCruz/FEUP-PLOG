@@ -3,6 +3,8 @@
 %(!) - modified from restrictions.pl file
 %(?) - Needs rework for list format
 :-use_module(library(clpfd)).
+:-use_module(library(lists)).
+
 
 %Calls setColumnSandwich with the right arguments
 setColumnsSandwich(Board, Dim):-
@@ -113,7 +115,7 @@ setSumPiecesColumn(Board, NextSum, ExpectedSum, ColumnNum, NextColumnPos, LinePo
 
 %Sets the sum of white pieces for all columns to be Dim/2
 setSumPiecesColumns(Board, Dim):-
-ExpectedSum is 3 * Dim / 2,
+ExpectedSum is 3 * Dim // 2,
 setSumPiecesColumn(Board, 0, ExpectedSum, Dim, 0, 0).
 %------------------------------------------------
 
@@ -139,7 +141,7 @@ setSumPiecesLine(T, Value).*/
 
 %Sets the value of the sum of pieces in each line to Dim/2
 setPiecesValuesLines(Board, Dim):-
-Value is Dim/2,
+Value is Dim // 2,
 setSumPiecesLine(Board,Value, Dim).
 %---------------------------------------------------------
 
@@ -210,10 +212,10 @@ lists2List(InitialBoard,[],InitialList),
 length(InitialBoard, BoardDim),
 length(InitialList,NumCells),
 length(SolvedBoard, NumCells),
-%domain(SolvedBoard,1,2), %Used in Sicstus
-SolvedBoard ins 1..2, % Used in SWI-Prolog
+domain(SolvedBoard,1,2), %Used in Sicstus
+%SolvedBoard ins 1..2, % Used in SWI-Prolog
 transferPieceCoord(InitialList,SolvedBoard),
-ExpectedSum is 3 * BoardDim / 2,
+ExpectedSum is 3 * BoardDim // 2,
 setLinesSandwich(SolvedBoard, BoardDim),
 setColumnsSandwich(SolvedBoard, BoardDim),
 setSumPiecesLines(SolvedBoard, 0, ExpectedSum, 1, BoardDim),
