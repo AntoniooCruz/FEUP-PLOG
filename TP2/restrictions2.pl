@@ -223,6 +223,3 @@ setSumPiecesColumns(SolvedBoardList, BoardDim),
 labeling([],SolvedBoardList),
 list2LL(SolvedBoardList, Solution, BoardDim).
 %--------------------------------------------------------------------------------
-
-
-

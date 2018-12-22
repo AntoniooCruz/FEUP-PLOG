@@ -4,8 +4,7 @@
 
 start:-
 boardSize(Size),
-createBoard(Size,[],Board),
-print_tab(Board,Size,0),nl,
+seedBoard(Size,Board),
 set_board_restrictions(Board, LineSolution,FinalBoard),
 generatePuzzle(FinalBoard,BoardToSolve),
 print_tab(BoardToSolve,Size,0),

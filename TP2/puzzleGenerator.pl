@@ -1,43 +1,36 @@
 :- use_module(library(random)).
 
-% Creates a Board dynamically given a certain Size
-% createBoard(+Size,+InitialEmptyBoard,-FinalBoard)
+seedBoard(Size,SeededBoard):-
+Cells is Size * Size,
+random(0,Cells,SeedBlack),
+random(0,Cells,SeedWhite),
+createBoard(Cells,0,SeedBlack,SeedWhite,[],SeededList),
+list2LL(SeededList, SeededBoard, Size).
 
-createBoard(0,0,FinalBoard,FinalBoard).
+createBoard(Cells,Cells,SeedBlack,SeedWhite,SeededBoard,SeededBoard).
 
-createBoard(N,_Board,_FinalBoard):-
-N mod 2 =\= 0,
-write('The board must have an even length'),
-createBoard(0,0,[],[]).
-
-createBoard(N,Board,FinalBoard):-
-N mod 2 =:= 0,
-createBoardList(N,0,Board,FinalBoard),
-createBoard(0,0,FinalBoard,FinalBoard).
-
-% Auxiliar function to the createBoard
-% createBoardList(+Size,+Counter,+Board,-FinalBoard)
-
-createBoardList(N,Counter,Board,FinalBoard):-
-N > 0,
-Size is N + Counter,
-createLine(Size,[],F1),
-append([F1],Board,B1),
-N1 is N - 1,
+createBoard(Cells,Counter,SeedBlack,SeedWhite,Temp,SeededBoard):-
+Counter < Cells,
+Counter =\= SeedBlack,
+Counter =\= SeedWhite,
+append(Temp,[0],NewTemp),
 C1 is Counter + 1,
-createBoardList(N1,C1,B1,FinalBoard).
-createBoardList(0,_Counter,Board,Board).
+createBoard(Cells,C1,SeedBlack,SeedWhite,NewTemp,SeededBoard).
 
-% Creates a line filled with pieces
-% createLine(+Size,+Line,-FinalLine)
+createBoard(Cells,Counter,SeedBlack,SeedWhite,Temp,SeededBoard):-
+Counter < Cells,
+Counter =:= SeedWhite,
+append(Temp,[1],NewTemp),
+C1 is Counter + 1,
+createBoard(Cells,C1,SeedBlack,SeedWhite,NewTemp,SeededBoard).
 
-createLine(Size,Line,F):-
-    Size > 0,
-    append([0],Line,L1),
-    S1 is Size-1,
-    createLine(S1,L1,F).
+createBoard(Cells,Counter,SeedBlack,SeedWhite,Temp,SeededBoard):-
+Counter < Cells,
+Counter =:= SeedBlack,
+append(Temp,[2],NewTemp),
+C1 is Counter + 1,
+createBoard(Cells,C1,SeedBlack,SeedWhite,NewTemp,SeededBoard).
 
-createLine(0,Line,Line).
 
 generatePuzzle(SolvableBoard,BoardToSolve):-
 lists2List(SolvableBoard,[],SolvableList),
