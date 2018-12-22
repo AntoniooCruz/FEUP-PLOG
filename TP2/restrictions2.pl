@@ -214,21 +214,14 @@ length(SolvedBoard, NumCells),
 SolvedBoard ins 1..2, % Used in SWI-Prolog
 transferPieceCoord(InitialList,SolvedBoard),
 ExpectedSum is 3 * BoardDim / 2,
-%setSumPiecesLines(SolvedBoard, 0, ExpectedSum, 1, BoardDim),
-%setColumnsSandwich(SolvedBoard, BoardDim),
+setLinesSandwich(SolvedBoard, BoardDim),
+setColumnsSandwich(SolvedBoard, BoardDim),
+setSumPiecesLines(SolvedBoard, 0, ExpectedSum, 1, BoardDim),
 setSumPiecesColumns(SolvedBoard, BoardDim),
-%setPiecesValues(SolvedBoard, BoardDim),
 labeling([],SolvedBoard),
 list2LL(SolvedBoard, Solution, BoardDim),
 write(Solution).
 %--------------------------------------------------------------------------------
 
-test(I,F):-
-length(I,Dim),
-length(F,Dim),
-transferPieceCoord(I,F),
 
-labeling([],F).
-%_MISC_
-%SolvedBoard = [[A1,A2,A3,A4],[B1,B2,B3,B4],[C1,C2,C3,C4],[D1,D2,D3,D4]],
 
