@@ -42,12 +42,12 @@ setLineSandwich([E1,E2,E3|[]], _, _):-
 E2 #= E1 #\/ E2 #= E3.
 
 
-setLineSandwich([E1,E2,E3|T], 1, Dim):-
+setLineSandwich([_E1,E2,E3|T], 1, Dim):-
 K1 is 2,
 Kf is K1 mod Dim,
 setLineSandwich([E2,E3|T], Kf, Dim).
 
-setLineSandwich([E1,E2,E3|T], 0, Dim):-
+setLineSandwich([_E1,E2,E3|T], 0, Dim):-
 K1 is 1,
 Kf is K1 mod Dim,
 setLineSandwich([E2,E3|T], Kf, Dim).
@@ -190,7 +190,7 @@ list2LL(List, LL, Dim):-
 l2ll(List, LL,[], Dim, [], 0).
 
 
-l2ll([], LL, Aux, Dim, TempList, _):-
+l2ll([], LL, Aux, _Dim, TempList, _):-
 append(Aux, [TempList], NewAux),
 equal(LL, NewAux).
 

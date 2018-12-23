@@ -7,7 +7,7 @@ random(0,Cells,SeedWhite),
 createBoard(Cells,0,SeedBlack,SeedWhite,[],SeededList),
 list2LL(SeededList, SeededBoard, Size).
 
-createBoard(Cells,Cells,SeedBlack,SeedWhite,SeededBoard,SeededBoard).
+createBoard(Cells,Cells,_SeedBlack,_SeedWhite,SeededBoard,SeededBoard).
 
 createBoard(Cells,Counter,SeedBlack,SeedWhite,Temp,SeededBoard):-
 Counter < Cells,
@@ -35,20 +35,20 @@ createBoard(Cells,C1,SeedBlack,SeedWhite,NewTemp,SeededBoard).
 generatePuzzle(SolvableBoard,BoardToSolve):-
 lists2List(SolvableBoard,[],SolvableList),
 length(SolvableBoard, BoardDim),
-makePuzzle(SolvableList,BoardList,[],1,BoardDim,BoardToSolve).
+makePuzzle(SolvableList,_BoardList,[],1,BoardDim,BoardToSolve).
 
-makePuzzle([],BoardList,OldList,Skip,BoardDim,BoardToSolve):-
+makePuzzle([],_BoardList,OldList,_Skip,BoardDim,BoardToSolve):-
 list2LL(OldList, BoardToSolve, BoardDim).
 
-makePuzzle([H | T],BoardList,OldList,Skip,BoardDim,BoardToSolve):-
+makePuzzle([_H | T],BoardList,OldList,Skip,BoardDim,BoardToSolve):-
 Skip =\= 0,
 append(OldList,[0],BoardList),
 random(0,4,NewSkip),
-makePuzzle(T,New,BoardList,NewSkip,BoardDim,BoardToSolve).
+makePuzzle(T,_New,BoardList,NewSkip,BoardDim,BoardToSolve).
 
 makePuzzle([H | T],BoardList,OldList,Skip,BoardDim,BoardToSolve):-
 Skip =:= 0,
 append(OldList,[H],BoardList),
 random(0,4,NewSkip),
-makePuzzle(T,New,BoardList,NewSkip,BoardDim,BoardToSolve).
+makePuzzle(T,_New,BoardList,NewSkip,BoardDim,BoardToSolve).
 
